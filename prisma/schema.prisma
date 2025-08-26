@@ -1,15 +1,418 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ====================== ENUMS ======================
+
+enum FriendshipStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum BlockStatus {
+  active
+  lifted
+}
+
+enum CommunityRole {
+  owner
+  admin
+  member
+}
+
+enum CommunityMemberStatus {
+  active
+  banned
+}
+
+enum JoinRequestStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum ChatType {
+  direct
+  group
+  channel
+}
+
+enum MessageType {
+  text
+  image
+  video
+  file
+  system
+}
+
+enum CallType {
+  audio
+  video
+}
+
+enum CallStatus {
+  ongoing
+  ended
+  missed
+}
+
+enum NotificationType {
+  friend_request
+  community_invite
+  message
+  call
+}
+
+enum ChannelType {
+  text
+  voice
+  video
+}
+
+enum ReactionEmoji {
+  like
+  love
+  laugh
+  sad
+  angry
+}
+
+// ====================== MODELS ======================
+
+model User {
+  id              String    @id @default(uuid())
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  profile         Profile?
+  accounts        Account[]
+  sessions        Session[]
+  notifications   Notificacion[]
+  friendshipsReq  FriendShip[] @relation("FriendshipRequester")
+  friendshipsRec  FriendShip[] @relation("FriendshipAddressee")
+  blocksAsBlocker Block[]    @relation("Blocker")
+  blocksAsBlocked Block[]    @relation("Blocked")
+  communityMembers CommunityMember[]
+  communityJoinRequests CommunityJoinRequest[]
+  communityInvitesCreated CommunityInvite[] @relation("CommunityInviteCreatedBy")
+  chatsSettings   ChatSettings[]
+  messages        Message[]
+  callsInitiated  Call[] @relation("CallInitiator")
+  callParticipants CallParticipant[]
+
+  // Agregar estas dos relaciones faltantes:
+  ownedCommunities Community[] @relation("CommunityOwner")
+  reactions       Reaction[]
+
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model Profile {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  username    String  @unique
+  displayName String?
+  bio         String?
+  avatarUrl   String?
+  bannerUrl   String?
+
+  user        User    @relation(fields: [userId], references: [id])
+
+  @@index([username])
+}
+
+model Account {
+  id                String   @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([expires])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@index([expires])
+}
+
+model FriendShip {
+  id          String            @id @default(uuid())
+  requesterId String
+  addresseeId String
+  status      FriendshipStatus  @default(pending)
+  createdAt   DateTime          @default(now())
+  respondedAt DateTime?
+
+  requester   User              @relation("FriendshipRequester", fields: [requesterId], references: [id])
+  addressee   User              @relation("FriendshipAddressee", fields: [addresseeId], references: [id])
+
+  @@unique([requesterId, addresseeId])
+  @@index([status])
+}
+
+model Block {
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id])
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id])
+
+  @@id([blockerId, blockedId])
+  @@index([createdAt])
+}
+
+model Notificacion {
+  id         String            @id @default(uuid())
+  userId     String
+  type       NotificationType
+  entityId   String?
+  entityType String?
+  content    String?
+  isRead     Boolean           @default(false)
+  createdAt  DateTime          @default(now())
+
+  user       User              @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model Community {
+  id           String     @id @default(uuid())
+  slug         String     @unique
+  name         String
+  description  String?
+  ownerId      String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  owner        User       @relation("CommunityOwner", fields: [ownerId], references: [id])
+  members      CommunityMember[]
+  joinRequests CommunityJoinRequest[]
+  invites      CommunityInvite[]
+  channels     Channel[]
+
+  @@index([ownerId])
+  @@index([createdAt])
+}
+
+model CommunityMember {
+  id          String                @id @default(uuid())
+  communityId String
+  userId      String
+  role        CommunityRole         @default(member)
+  joinedAt    DateTime              @default(now())
+  status      CommunityMemberStatus @default(active)
+
+  community   Community             @relation(fields: [communityId], references: [id])
+  user        User                  @relation(fields: [userId], references: [id])
+
+  @@unique([communityId, userId])
+  @@index([status])
+}
+
+model CommunityJoinRequest {
+  id          String             @id @default(uuid())
+  communityId String
+  userId      String
+  status      JoinRequestStatus  @default(pending)
+  createdAt   DateTime           @default(now())
+  respondedAt DateTime?
+
+  community   Community          @relation(fields: [communityId], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
+
+  @@index([communityId, status])
+}
+
+model CommunityInvite {
+  id          String     @id @default(uuid())
+  communityId String
+  code        String     @unique
+  createdById String
+  maxUses     Int?
+  usedCount   Int        @default(0)
+  expiresAt   DateTime?
+  createdAt   DateTime   @default(now())
+
+  community   Community  @relation(fields: [communityId], references: [id])
+  createdBy   User       @relation("CommunityInviteCreatedBy", fields: [createdById], references: [id])
+
+  @@index([communityId])
+  @@index([createdById])
+  @@index([expiresAt])
+}
+
+model Channel {
+  id          String       @id @default(uuid())
+  communityId String
+  name        String
+  type        ChannelType
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  community   Community    @relation(fields: [communityId], references: [id])
+  chats       Chat[]
+
+  @@index([communityId])
+  @@index([name])
+}
+
+model Chat {
+  id          String       @id @default(uuid())
+  type        ChatType
+  channelId   String?
+  title       String?
+  updatedAt   DateTime     @updatedAt
+  respondedAt DateTime?
+
+  channel     Channel?     @relation(fields: [channelId], references: [id])
+  messages    Message[]
+  settings    ChatSettings[]
+  calls       Call[]
+
+  @@index([channelId])
+  @@index([updatedAt])
+}
+
+model Call {
+  id          String      @id @default(uuid())
+  chatId      String
+  initiatorId String
+  type        CallType
+  status      CallStatus
+  startedAt   DateTime
+  endedAt     DateTime?
+
+  chat        Chat        @relation(fields: [chatId], references: [id])
+  initiator   User        @relation("CallInitiator", fields: [initiatorId], references: [id])
+  participants CallParticipant[]
+
+  @@index([chatId])
+  @@index([initiatorId])
+  @@index([status])
+}
+
+model CallParticipant {
+  id       String   @id @default(uuid())
+  callId   String
+  userId   String
+  joinedAt DateTime @default(now())
+  leftAt   DateTime?
+
+  call     Call     @relation(fields: [callId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@index([callId])
+  @@index([userId])
+}
+
+model ChatSettings {
+  id         String   @id @default(uuid())
+  chatId     String
+  userId     String
+  lastReadAt DateTime?
+  joinedAt   DateTime @default(now())
+  isMuted    Boolean  @default(false)
+  isPinned   Boolean  @default(false)
+  isArchived Boolean  @default(false)
+
+  chat       Chat     @relation(fields: [chatId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([chatId, userId])
+  @@index([userId])
+  @@index([chatId])
+  @@index([isMuted])
+  @@index([isPinned])
+  @@index([isArchived])
+}
+
+model Message {
+  id        String       @id @default(uuid())
+  chatId    String
+  senderId  String
+  type      MessageType
+  content   String?
+  replyToId String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  chat      Chat         @relation(fields: [chatId], references: [id])
+  sender    User         @relation(fields: [senderId], references: [id])
+  attachments Attachment[]
+  reactions   Reaction[]
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  messageId String
+  url       String
+  type      String
+  content   String?
+  size      Int?
+  duration  Int?
+  metadata  Json?
+
+  message   Message  @relation(fields: [messageId], references: [id])
+
+  @@index([messageId])
+}
+
+model Reaction {
+  id        String        @id @default(uuid())
+  messageId String
+  userId    String
+  createdAt DateTime      @default(now())
+  emoji     ReactionEmoji
+
+  message   Message       @relation(fields: [messageId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
+
+  @@index([messageId])
+  @@index([userId])
+  @@index([createdAt])
 }

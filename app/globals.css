@@ -1,1 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Reenie+Beanie&display=swap");
+
 @import "tailwindcss";
+
+.mixmatch {
+  font-family: "Reenie Beanie", cursive;
+}
+:root {
+  background-color: var(--theme-background);
+}
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Agregando variables CSS personalizadas para temas - Light Mode */
+  --theme-primary: #867eff;
+  --theme-secondary: #867eff;
+  --theme-accent: #867eff;
+  --theme-background: #ffffff;
+  --theme-surface: #fcfcff;
+  --theme-text: #14141f;
+  --theme-textSecondary: #616b7c;
+  --theme-border: #e8e9f0;
+}
+
+/* Dark mode variables */
+.dark {
+  --theme-primary: #867eff;
+  --theme-secondary: #867eff;
+  --theme-accent: #867eff;
+  --theme-background: #14141f;
+  --theme-surface: #171723;
+  --theme-text: #ffffff;
+  --theme-textSecondary: #616b7c;
+  --theme-border: #373b4d;
+}
+
+/* Clases utilitarias para usar variables de tema */
+.theme-bg-primary {
+  background-color: var(--theme-primary);
+}
+.theme-bg-secondary {
+  background-color: var(--theme-secondary);
+}
+.theme-bg-accent {
+  background-color: var(--theme-accent);
+}
+.theme-bg-surface {
+  background-color: var(--theme-surface);
+}
+.theme-text-primary {
+  color: var(--theme-text);
+}
+.theme-text-secondary {
+  color: var(--theme-textSecondary);
+}
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-text-purple {
+  color: var(--theme-primary);
+}
+
+.theme-bg-textPrimary {
+  background-color: var(--theme-text);
+}

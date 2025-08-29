@@ -59,12 +59,14 @@ function VerificarEmail() {
       <InputVerification id="otp" />
       <div>
         <div id="login-button" className="mt-6">
-          <Primarybutton
-            id="next-button"
-            className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold"
-          >
-            Siguiente
-          </Primarybutton>
+          <Link href={"/auth/create-password"}>
+            <Primarybutton
+              id="next-button"
+              className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold"
+            >
+              Siguiente
+            </Primarybutton>{" "}
+          </Link>
         </div>
       </div>
     </FormFormat>

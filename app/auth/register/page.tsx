@@ -98,7 +98,7 @@ function Register() {
       </div>
 
       <div id="create-account" className="mt-6">
-        <Link href={"/auth/newAccount"}>
+        <Link href={"/auth/new-account"}>
           <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
             Crear una cuenta
           </Primarybutton>

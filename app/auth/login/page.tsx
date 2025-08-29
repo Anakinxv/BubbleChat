@@ -72,9 +72,11 @@ function Page() {
         </div>
 
         <div id="login-button" className="mt-6">
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-            Iniciar sesión
-          </Primarybutton>
+          <Link href={"/HomePage"}>
+            <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
+              Iniciar sesión
+            </Primarybutton>{" "}
+          </Link>
         </div>
 
         <div

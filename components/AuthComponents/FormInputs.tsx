@@ -21,6 +21,7 @@ type FormInputsProps = {
 };
 
 function FormInputs({
+  id,
   type = "text",
   placeholder,
   name = "",
@@ -43,6 +44,7 @@ function FormInputs({
         <Label
           htmlFor={name}
           className="mb-1 text-left text-lg text-[var(--theme-text)] "
+          id={id}
         >
           {label}
         </Label>{" "}
@@ -52,6 +54,7 @@ function FormInputs({
             variant="ghost"
             className="  hover:bg-[var(--theme-secondary)]/10 rounded-2xl  text-[var(--theme-textSecondary)]"
             onClick={handleShowPassword}
+            id={id}
           >
             {showPassword ? (
               <span className="flex items-center justify-center gap-1">
@@ -70,7 +73,7 @@ function FormInputs({
 
       <div className="relative">
         <Input
-          id={name}
+          id={id}
           name={name}
           placeholder={placeholder}
           type={type === "password" && showPassword ? "text" : type}

@@ -1,24 +1,40 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Button } from "../ui/button";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+
+type VariantType =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link";
+
 type buttonProps = {
   id?: string;
-  text: string;
+  children: ReactNode;
   onClick?: () => void;
-  disbled?: boolean;
-  classname?: string;
+  disabled?: boolean;
+  className?: string;
+  variant?: VariantType;
 };
 
-function Primarybutton({ id, text, onClick, disbled, classname }: buttonProps) {
+function Primarybutton({
+  id,
+  children,
+  onClick,
+  disabled,
+  className,
+  variant = "default",
+}: buttonProps) {
   return (
     <Button
       id={id}
-      className="theme-bg-primary text-white   w-full  hover:opacity-90  text-lg font-semibold  "
+      className={className}
       onClick={onClick}
-      disabled={disbled}
+      disabled={disabled}
+      variant={variant}
     >
-      {text}
+      {children}
     </Button>
   );
 }

@@ -7,7 +7,8 @@ import Image from "next/image";
 import { useTheme } from "../CommonComponents/ThemeProvider";
 
 type AuthBubbleType = {
-  id: number;
+  key: number;
+  id?: string;
   src: string;
   alt: string;
   text: string;
@@ -21,21 +22,24 @@ function AuthRegisterbubble() {
 
   const authBubbles: AuthBubbleType[] = [
     {
-      id: 1,
+      key: 1,
+      id: "auth-bubble-1",
       src: isDarkTheme ? AppleDark.src : AppleLight.src,
       alt: "Auth bubble 1",
       text: "Registrarse con Apple",
     },
     {
-      id: 2,
+      key: 2,
+      id: "auth-bubble-2",
       src: Google.src,
-      alt: "Auth bubble 3",
+      alt: "Auth bubble 2",
       text: "Registrarse con Google",
     },
     {
-      id: 3,
+      key: 3,
+      id: "auth-bubble-3",
       src: isDarkTheme ? GitHubDark.src : GitHubLight.src,
-      alt: "Auth bubble 2",
+      alt: "Auth bubble 3",
       text: "Registrarse con GitHub",
     },
   ];
@@ -45,7 +49,8 @@ function AuthRegisterbubble() {
       {/* Contenedor para alinear las burbujas */}
       {authBubbles.map((bubble) => (
         <div
-          key={bubble.id}
+          key={bubble.key}
+          id={bubble.id}
           className="auth-bubble bg-[var(--theme-color-surface)] border border-[var(--theme-border)] 
                      h-[50px] rounded-full flex items-center justify-center hover:opacity-50 
                      transition-opacity duration-300 ease-in-out gap-2"

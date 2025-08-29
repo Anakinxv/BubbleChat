@@ -1,53 +1,90 @@
 "use client";
 import React from "react";
 import FormFormat from "@/components/AuthComponents/FormFormat";
-import { Button } from "@/components/ui/button";
 import AuthBubbles from "@/components/AuthComponents/AuthBubbles";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import AuthRegisterbubble from "@/components/AuthComponents/AuthRegisterbubble";
+import Primarybutton from "@/components/CommonComponents/Primarybutton";
 
 function Register() {
   useGSAP(() => {
     const masterTimeline = gsap.timeline({
-      defaults: { duration: 0.15, ease: "power2.out" },
+      defaults: { duration: 0.3, ease: "power2.out" },
     });
 
-    masterTimeline.from("#logo", {
-      opacity: 0,
-      y: -40,
-      duration: 0.2,
-      ease: "power2.out",
-    });
-    masterTimeline.from("#title", {
-      opacity: 0,
-      y: -20,
-      duration: 0.15,
-      ease: "power2.out",
-    });
-
-    [
-      "#email",
-      "#password",
-      "#login-button",
-      "#auth-bubbles", // Cambiar .auth-bubble por #auth-bubbles
-      "#divider",
-      "#create-account", // Agregar el botón de crear cuenta
-      "#auth-link",
-    ].forEach((selector) => {
-      masterTimeline.from(selector, {
+    // Establecer estado inicial para todos los elementos que se van a animar
+    gsap.set(
+      [
+        "#logo",
+        "#title",
+        "#email",
+        "#password",
+        "#login-button",
+        "#auth-bubble-1",
+        "#auth-bubble-2",
+        "#auth-bubble-3",
+        "#divider",
+        "#create-account",
+        "#auth-link",
+      ],
+      {
         opacity: 0,
-        y: -20,
-        duration: 0.15,
-        ease: "power2.out",
-      });
+        y: 20,
+      }
+    );
+
+    // Animar logo
+    masterTimeline.to("#logo", {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      ease: "power2.out",
     });
-  });
+
+    // Animar título
+    masterTimeline.to(
+      "#title",
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      },
+      "-=0.2"
+    );
+
+    // Animar burbujas de autenticación con stagger
+    masterTimeline.to(
+      ["#auth-bubble-1", "#auth-bubble-2", "#auth-bubble-3"],
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        stagger: 0.1,
+        ease: "power2.out",
+      },
+      "-=0.1"
+    );
+
+    // Animar resto de elementos
+    masterTimeline.to(
+      ["#divider", "#create-account", "#auth-link"],
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        stagger: 0.1,
+        ease: "power2.out",
+      },
+      "-=0.2"
+    );
+  }, []);
 
   return (
     <FormFormat title="Únete Hoy a" accent="BubbleChat">
-      <div id="auth-bubbles" className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <AuthRegisterbubble />
       </div>
 
@@ -61,9 +98,11 @@ function Register() {
       </div>
 
       <div id="create-account" className="mt-6">
-        <Button className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-          Crear una cuenta
-        </Button>
+        <Link href={"/auth/newAccount"}>
+          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
+            Crear una cuenta
+          </Primarybutton>
+        </Link>
       </div>
 
       <div
@@ -72,12 +111,12 @@ function Register() {
       >
         <p className="mr-1">¿Tienes una cuenta?</p>
         <Link href="/auth/login">
-          <Button
+          <Primarybutton
             className="theme-text-purple p-0 h-auto text-sm"
             variant="link"
           >
             Iniciar Sesión
-          </Button>
+          </Primarybutton>
         </Link>
       </div>
     </FormFormat>

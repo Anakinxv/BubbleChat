@@ -8,7 +8,7 @@ import AuthBubbles from "@/components/AuthComponents/AuthBubbles";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-
+import Primarybutton from "@/components/CommonComponents/Primarybutton";
 function Page() {
   useGSAP(() => {
     // Timeline principal que controla TODAS las animaciones
@@ -72,9 +72,9 @@ function Page() {
         </div>
 
         <div id="login-button" className="mt-6">
-          <Button className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
+          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
             Iniciar sesión
-          </Button>
+          </Primarybutton>
         </div>
 
         <div
@@ -98,12 +98,12 @@ function Page() {
         >
           <p className="mr-1">¿No tienes una cuenta?</p>
           <Link href="/auth/register">
-            <Button
+            <Primarybutton
               className="theme-text-purple p-0 h-auto text-sm"
               variant="link"
             >
               Regístrate
-            </Button>
+            </Primarybutton>
           </Link>
         </div>
       </FormFormat>

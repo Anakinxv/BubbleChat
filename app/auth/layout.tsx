@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import ThemeSelector from "@/components/CommonComponents/ThemeSelector";
-
+import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 

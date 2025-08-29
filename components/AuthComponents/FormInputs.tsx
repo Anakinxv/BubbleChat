@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
-
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 type FormInputsProps = {
+  id?: string;
   type?: string;
   placeholder?: string;
   name?: string;

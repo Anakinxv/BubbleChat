@@ -1,4 +1,3 @@
-// SVG imports
 import AppleLight from "../../public/Apple_light.svg";
 import AppleDark from "../../public/Apple_dark.svg";
 import GitHubDark from "../../public/GitHub_dark.svg";
@@ -11,9 +10,10 @@ type AuthBubbleType = {
   id: number;
   src: string;
   alt: string;
+  text: string;
 };
 
-function AuthBubbles({ className }: { className?: string }) {
+function AuthRegisterbubble() {
   const { currentTheme } = useTheme();
 
   // Fix: Check if theme is 'dark' instead of truthy value
@@ -24,16 +24,19 @@ function AuthBubbles({ className }: { className?: string }) {
       id: 1,
       src: isDarkTheme ? AppleDark.src : AppleLight.src,
       alt: "Auth bubble 1",
+      text: "Registrarse con Apple",
     },
     {
       id: 2,
       src: Google.src,
       alt: "Auth bubble 3",
+      text: "Registrarse con Google",
     },
     {
       id: 3,
       src: isDarkTheme ? GitHubDark.src : GitHubLight.src,
       alt: "Auth bubble 2",
+      text: "Registrarse con GitHub",
     },
   ];
 
@@ -43,21 +46,25 @@ function AuthBubbles({ className }: { className?: string }) {
       {authBubbles.map((bubble) => (
         <div
           key={bubble.id}
-          className="bg-[var(--theme-color-surface)] border border-[var(--theme-border)] 
+          className="auth-bubble bg-[var(--theme-color-surface)] border border-[var(--theme-border)] 
                      h-[50px] rounded-full flex items-center justify-center hover:opacity-50 
-                     transition-opacity duration-300 ease-in-out"
+                     transition-opacity duration-300 ease-in-out gap-2"
         >
           <Image
             src={bubble.src}
             alt={bubble.alt}
             className=" pointer-events-none"
-            width={24}
-            height={24}
+            width={20}
+            height={20}
           />
+
+          <span className="ml-2 text-[var(--theme-text)] text-lg font-medium">
+            {bubble.text}
+          </span>
         </div>
       ))}
     </>
   );
 }
 
-export default AuthBubbles;
+export default AuthRegisterbubble;

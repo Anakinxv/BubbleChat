@@ -41,7 +41,7 @@ function FormFormat({
         />
         <CardTitle
           id="title"
-          className="flex flex-row items-baseline whitespace-nowrap text-5xl text-[var(--theme-text)]"
+          className="flex flex-row flex-wrap  justify-center items-baseline whitespace-nowrap text-5xl text-[var(--theme-text)]"
         >
           <span>{title}</span>
           <span className="ml-2 mixmatch text-[var(--theme-primary)]">
@@ -52,9 +52,9 @@ function FormFormat({
         {description && (
           <CardDescription
             id="description"
-            className="flex flex-row items-baseline whitespace-nowrap text-xl text-[var(--theme-textSecondary)]"
+            className="flex flex-row flex-wrap w-full justify-center items-baseline text-xl text-[var(--theme-textSecondary)]"
           >
-            <span>{description}</span>
+            <span className="text-center">{description}</span>
             {email && (
               <span className="ml-2 underline text-[var(--theme-primary)]">
                 <p>{email}</p>

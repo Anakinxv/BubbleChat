@@ -48,7 +48,7 @@ function Page() {
 
   return (
     <>
-      <FormFormat title="Inicia sesión en" accent="BubbleChat">
+      <FormFormat title="Inicia sesión en" accent="BubbleChat!">
         <FormInputs
           id="email"
           label="Email"
@@ -65,14 +65,17 @@ function Page() {
             onChange={(value) => console.log(value.target.value)}
           />
           <div className="flex justify-end mt-2">
-            <Primarybutton className="theme-text-purple" variant={"link"}>
-              Olvidaste tu contraseña?
-            </Primarybutton>
+            <Link href={"/auth/recover-password"}>
+              {" "}
+              <Primarybutton className="theme-text-purple" variant={"link"}>
+                Olvidaste tu contraseña?
+              </Primarybutton>
+            </Link>
           </div>
         </div>
 
         <div id="login-button" className="mt-6">
-          <Link href={"/HomePage"}>
+          <Link href={"/app/home"}>
             <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
               Iniciar sesión
             </Primarybutton>{" "}

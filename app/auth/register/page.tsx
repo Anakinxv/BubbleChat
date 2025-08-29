@@ -83,7 +83,7 @@ function Register() {
   }, []);
 
   return (
-    <FormFormat title="Únete Hoy a" accent="BubbleChat">
+    <FormFormat title="Únete Hoy a" accent="BubbleChat!">
       <div className="flex flex-col gap-4">
         <AuthRegisterbubble />
       </div>

@@ -43,9 +43,12 @@ function CrearContraseña() {
       />
       <div>
         <div id="next-button" className="mt-6">
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-            <Link href={"/app/home"}>Siguiente</Link>
-          </Primarybutton>
+          <Link href={"/app/home"}>
+            {" "}
+            <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
+              Siguiente
+            </Primarybutton>
+          </Link>
         </div>
       </div>
     </FormFormat>

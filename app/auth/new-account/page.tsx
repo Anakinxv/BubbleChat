@@ -40,7 +40,7 @@ function NewAccountPage() {
   });
 
   return (
-    <FormFormat title="Crea una cuenta en" accent="BubbleChat">
+    <FormFormat title="Crea una cuenta en" accent="BubbleChat!">
       {/* Primer Nombre */}
       <FormInputs
         id="firstName"

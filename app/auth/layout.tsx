@@ -35,7 +35,7 @@ export default function AuthLayout({
         <div id="theme-selector">
           <ThemeSelector />
         </div>
-        <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="w-full h-full flex flex-col justify-start items-center">
           {children}
         </div>
       </div>

@@ -3,7 +3,7 @@
 import React from "react";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 import FormFormat from "@/components/AuthComponents/FormFormat";
-import { Button } from "@/components/ui/button";
+
 import AuthBubbles from "@/components/AuthComponents/AuthBubbles";
 import Link from "next/link";
 import gsap from "gsap";
@@ -65,9 +65,9 @@ function Page() {
             onChange={(value) => console.log(value.target.value)}
           />
           <div className="flex justify-end mt-2">
-            <Button className="theme-text-purple" variant={"link"}>
+            <Primarybutton className="theme-text-purple" variant={"link"}>
               Olvidaste tu contraseña?
-            </Button>
+            </Primarybutton>
           </div>
         </div>
 

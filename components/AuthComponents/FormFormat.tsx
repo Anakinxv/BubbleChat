@@ -16,10 +16,12 @@ type FormFormatProps = {
   description?: string;
   accent?: string;
   children: React.ReactNode;
+  email?: string;
 };
 
 function FormFormat({
   title,
+  email,
   description,
   accent,
   className,
@@ -50,9 +52,14 @@ function FormFormat({
         {description && (
           <CardDescription
             id="description"
-            className="text-[var(--theme-textSecondary)]"
+            className="flex flex-row items-baseline whitespace-nowrap text-xl text-[var(--theme-textSecondary)]"
           >
-            {description}
+            <span>{description}</span>
+            {email && (
+              <span className="ml-2 underline text-[var(--theme-primary)]">
+                <p>{email}</p>
+              </span>
+            )}
           </CardDescription>
         )}
       </CardHeader>

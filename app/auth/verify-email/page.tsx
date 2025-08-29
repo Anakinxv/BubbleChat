@@ -59,7 +59,7 @@ function VerificarEmail() {
       <InputVerification id="otp" />
       <div>
         <div id="login-button" className="mt-6">
-          <Link href={"/auth/create-password"}>
+          <Link href={"/auth/recovered-password"}>
             <Primarybutton
               id="next-button"
               className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold"

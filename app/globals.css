@@ -65,3 +65,7 @@
 .theme-bg-textPrimary {
   background-color: var(--theme-text);
 }
+
+.TooltipArrow {
+  display: none;
+}

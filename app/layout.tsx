@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Reenie_Beanie } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/CommonComponents/ThemeProvider"; // Ajusta la ruta si es necesario
-
+import { unstable_ViewTransition as ViewTransition } from "react";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -27,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${reenie.variable} antialiased`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ViewTransition>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ViewTransition>
       </body>
     </html>
   );

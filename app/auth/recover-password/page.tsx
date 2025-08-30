@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-
 import FormFormat from "@/components/AuthComponents/FormFormat";
 import Link from "next/link";
 import gsap from "gsap";
@@ -10,6 +9,45 @@ import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 
 function page() {
+  useGSAP(() => {
+    const masterTimeline = gsap.timeline({
+      defaults: { duration: 0.15, ease: "power2.out" },
+    });
+
+    masterTimeline.from("#logo", {
+      opacity: 0,
+      y: -40,
+      duration: 0.2,
+      ease: "power2.out",
+    });
+    masterTimeline.from("#title", {
+      opacity: 0,
+      y: -20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+    masterTimeline.from("#description", {
+      opacity: 0,
+      y: -20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+
+    masterTimeline.from("#emailOrUsername", {
+      opacity: 0,
+      y: 20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+
+    masterTimeline.from("#next-button", {
+      opacity: 0,
+      y: 20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+  }, []);
+
   return (
     <FormFormat
       title="Encuentra tu cuenta de"

@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    viewTransition: true,
+  },
   turbopack: {
     root: __dirname, // o la ruta al root correcto si es diferente
   },

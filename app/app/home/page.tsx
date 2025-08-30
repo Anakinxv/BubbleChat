@@ -1,7 +1,11 @@
 import React from "react";
-
+import Navbar from "@/components/CommonComponents/Navbar";
 function page() {
-  return <div>page</div>;
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
 }
 
 export default page;

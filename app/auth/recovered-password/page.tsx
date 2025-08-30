@@ -15,12 +15,34 @@ function RecoverPassword() {
       defaults: { duration: 0.15, ease: "power2.out" },
     });
 
-    masterTimeline.from("#title", { opacity: 0, y: -20 });
-    masterTimeline.from("#description", { opacity: 0, y: -20 });
-    masterTimeline.from("#password", { opacity: 0, y: -20 });
-    masterTimeline.from("#repeat-password", { opacity: 0, y: -20 });
-    masterTimeline.from("#next-button", { opacity: 0, y: -20 });
-  }, []);
+    masterTimeline.from("#logo", {
+      opacity: 0,
+      y: -40,
+      duration: 0.2,
+      ease: "power2.out",
+    });
+    masterTimeline.from("#title", {
+      opacity: 0,
+      y: -20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+    masterTimeline.from("#description", {
+      opacity: 0,
+      y: -20,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+
+    ["#password", "#repeat-password", "#next-button"].forEach((id, index) => {
+      masterTimeline.from(id, {
+        opacity: 0,
+        y: 20,
+        duration: 0.15,
+        ease: "power2.out",
+      });
+    });
+  });
 
   return (
     <FormFormat
@@ -43,7 +65,7 @@ function RecoverPassword() {
       />
       <div>
         <div id="next-button" className="mt-6">
-          <Link href={"/app/home"}>
+          <Link href={"/successful/page"}>
             <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
               Guardar contraseña
             </Primarybutton>

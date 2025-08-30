@@ -11,6 +11,7 @@ type VariantType =
 
 type buttonProps = {
   id?: string;
+  icon?: ReactNode;
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
@@ -20,6 +21,7 @@ type buttonProps = {
 
 function Primarybutton({
   id,
+  icon,
   children,
   onClick,
   disabled,
@@ -34,7 +36,7 @@ function Primarybutton({
       disabled={disabled}
       variant={variant}
     >
-      {children}
+      {icon} {children}
     </Button>
   );
 }

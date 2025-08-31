@@ -54,6 +54,10 @@
 .theme-text-secondary {
   color: var(--theme-textSecondary);
 }
+
+.separator {
+  background-color: var(--theme-border);
+}
 .theme-border {
   border-color: var(--theme-border);
 }

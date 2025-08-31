@@ -57,7 +57,7 @@ function UserDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-56"
+        className="w-56 theme-bg-surface theme-border shadow-lg rounded-2xl "
         align="end"
         alignOffset={-5}
         sideOffset={5}
@@ -90,7 +90,7 @@ function UserDropdown() {
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="bg-red-600" />
+        <DropdownMenuSeparator className="separator" />
 
         {/* Ver mi perfil */}
         <DropdownMenuItem
@@ -139,7 +139,7 @@ function UserDropdown() {
           <span>Configuración</span>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="bg-red-600" />
+        <DropdownMenuSeparator className="separator" />
 
         {/* Cerrar sesión */}
         <DropdownMenuItem

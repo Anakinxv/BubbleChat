@@ -73,3 +73,12 @@
 .TooltipArrow {
   display: none;
 }
+
+.unyc-false {
+  background: radial-gradient(
+    circle,
+    hsla(244, 100%, 75%, 0.7) 0%,
+    rgba(214, 143, 255, 0.2) 100%
+  );
+  box-shadow: 0 8px 24px rgba(135, 126, 255, 0.1);
+}

@@ -1,11 +1,15 @@
 import React from "react";
 import Navbar from "@/components/CommonComponents/Navbar";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
-import { Plus } from "lucide-react";
+import { Plus, Filter, Search } from "lucide-react";
+import CardCommunity from "@/components/CommonComponents/CardCommunity";
+import AppInputs from "@/components/CommonComponents/AppInputs";
+import { Button } from "@/components/ui/button";
+
 function HomePage() {
   return (
     <div className="flex flex-col justify-between items-center mt-12 ">
-      <h1 className="text-5xl font-extrabold mb-4 ">BubbleChat</h1>
+      <h1 className="text-7xl font-extrabold mb-4 ">BubbleChat</h1>
       <p className="text-2xl mb-8">
         Vive en tu propia burbuja, conecta con otras y crea comunidades
         dinámicas
@@ -14,6 +18,28 @@ function HomePage() {
         <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
           <Plus className="mr-2 h-10 " /> Crear Comunidad
         </Primarybutton>
+      </div>
+
+      <div>
+        <CardCommunity Mycomn={5} />
+      </div>
+
+      {/* Input y filtro */}
+      <div className="w-full px-4">
+        <div className="flex items-center p-4 max-w-[500px] mx-auto w-full">
+          <AppInputs
+            placeholder="Search..."
+            icon={<Search />}
+            className="border border-gray-300 rounded-full py-2 px-4 w-full"
+            type="text"
+          />
+          <div className="ml-2 p-3 rounded-full hover:bg-gray-100 transition-colors h-[48px] w-[48px] flex items-center justify-center">
+            <Filter
+              size={90} // Icono más grande
+              className="theme-text-secondary hover:theme-text-primary transition-colors duration-200"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

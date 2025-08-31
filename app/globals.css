@@ -48,6 +48,7 @@
 .theme-bg-surface {
   background-color: var(--theme-surface);
 }
+
 .theme-text-primary {
   color: var(--theme-text);
 }
@@ -81,4 +82,12 @@
     rgba(214, 143, 255, 0.2) 100%
   );
   box-shadow: 0 8px 24px rgba(135, 126, 255, 0.1);
+}
+
+.theme-category {
+  background-color: rgba(135, 126, 255, 0.526);
+}
+
+.theme-category-border {
+  border-color: rgba(135, 126, 255, 0.088);
 }

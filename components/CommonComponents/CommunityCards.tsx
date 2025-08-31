@@ -122,7 +122,7 @@ function CommunityCards() {
       {comunidades.map((comunidad) => (
         <div
           key={comunidad.nombre}
-          className="flex flex-col rounded-2xl border shadow-sm overflow-hidden h-[180px] theme-bg-surface theme-category-border"
+          className="flex flex-col rounded-2xl border shadow-sm overflow-hidden p-2 theme-bg-surface theme-category-border hover:shadow-lg shadow-purple-200/10 hover:border-2 hover:hover-cards    transition-shadow duration-200"
         >
           {/* Header - Altura fija */}
           <div className="flex items-center gap-3 p-3 h-[60px] flex-shrink-0">
@@ -136,8 +136,8 @@ function CommunityCards() {
               <div className="text-m font-bold line-clamp-1 theme-text-primary  leading-tight">
                 {comunidad.nombre}
               </div>
-              <div className="text-xs theme-text-secondary truncate font-medium mt-0.5">
-                <p> {comunidad.categoria}</p>
+              <div className="text-xs theme-text-secondary truncate font-medium mt-0.5 border theme-category-border px-2 py-1 rounded-2xl w-fit theme-category">
+                <p className="theme-text-purple "> {comunidad.categoria}</p>
               </div>
             </div>
           </div>
@@ -161,10 +161,11 @@ function CommunityCards() {
           </div>
 
           {/* Footer - Altura fija */}
-          <div className="p-3 mt-auto h-[50px] flex items-center">
+          <div className="p-3 mt-auto h-[50px] flex items-center cursor-pointer">
             <Button
               size="sm"
-              className="w-full text-xs h-7 font-semibold theme-bg-primary rounded-xl text-white"
+              className="w-full text-xs h-7 font-semibold theme-bg-primary rounded-xl text-white
+              hover:opacity-90 transition-opacity duration-200  cursor-pointer"
             >
               Unirse
             </Button>

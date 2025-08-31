@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent } from "../ui/card";
 import { Heart, Search } from "lucide-react";
 
@@ -27,9 +26,9 @@ function CardCommunity({ Mycomn }: { Mycomn: number }) {
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-stretch">
           {/* Primera tarjeta */}
-          <div className="flex-1 flex flex-col justify-center">
-            <div className="flex items-center gap-4 p-6 md:p-8 rounded-2xl  min-h-[120px] md:min-h-[140px] bg-[var(--theme-surface)] border border-[var(--theme-border)]">
-              <span className="text-4xl theme-text-primary">
+          <div className="flex-1 flex flex-col justify-center cursor-pointer">
+            <div className="flex items-center gap-4 p-6 md:p-8 rounded-2xl min-h-[120px] md:min-h-[140px] bg-[var(--theme-surface)] border border-[var(--theme-border)] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+              <span className="text-4xl theme-text-primary theme-category rounded-full p-2 theme-text-purple">
                 {cardsProps[0].icon}
               </span>
               <div>
@@ -42,12 +41,14 @@ function CardCommunity({ Mycomn }: { Mycomn: number }) {
               </div>
             </div>
           </div>
+
           {/* Separador vertical solo en desktop */}
           <div className="hidden md:block w-[2px] bg-gray-200 opacity-15 mx-2" />
+
           {/* Segunda tarjeta */}
-          <div className="flex-1 flex flex-col justify-center">
-            <div className="flex items-center gap-4 p-6 md:p-8 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] min-h-[120px] md:min-h-[140px]">
-              <span className="text-4xl theme-text-secondary">
+          <div className="flex-1 flex flex-col justify-center cursor-pointer">
+            <div className="flex items-center gap-4 p-6 md:p-8 rounded-2xl min-h-[120px] md:min-h-[140px] bg-[var(--theme-surface)] border border-[var(--theme-border)] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+              <span className="text-4xl theme-text-primary theme-category rounded-full p-2 theme-text-purple">
                 {cardsProps[1].icon}
               </span>
               <div>

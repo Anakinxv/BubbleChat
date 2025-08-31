@@ -48,7 +48,6 @@
 .theme-bg-surface {
   background-color: var(--theme-surface);
 }
-
 .theme-text-primary {
   color: var(--theme-text);
 }
@@ -85,9 +84,22 @@
 }
 
 .theme-category {
-  background-color: rgba(135, 126, 255, 0.526);
+  background-color: rgba(135, 126, 255, 0.196);
 }
 
 .theme-category-border {
-  border-color: rgba(135, 126, 255, 0.088);
+  border-color: rgba(135, 126, 255, 0.1);
+}
+
+.hover-cards {
+  border-color: rgb(135, 126, 255);
+}
+
+.filter-btn {
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+.filter-btn:hover {
+  background-color: rgba(135, 126, 255, 0.371); /* igual que .theme-category */
+  color: var(--theme-primary);
 }

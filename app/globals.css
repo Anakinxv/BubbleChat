@@ -90,6 +90,13 @@
 .theme-category-border {
   border-color: rgba(135, 126, 255, 0.1);
 }
+.theme-modal-border {
+  border-color: rgba(135, 126, 255, 0.499);
+}
+
+.theme-progress {
+  background-color: rgba(135, 126, 255, 0.1);
+}
 
 .hover-cards {
   border-color: rgb(135, 126, 255);

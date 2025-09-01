@@ -20,9 +20,9 @@ function InformaciónBasica() {
         />
         <AppInputs
           label="Descripción"
-          className="h-[100px]"
           placeholder="Ingrese una descripción"
           type="textarea"
+          className="min-h-[120px] resize-none align-top"
         />
       </div>
     </div>

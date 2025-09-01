@@ -39,6 +39,10 @@
 .theme-bg-primary {
   background-color: var(--theme-primary);
 }
+
+.theme-bg-background {
+  background-color: var(--theme-background);
+}
 .theme-bg-secondary {
   background-color: var(--theme-secondary);
 }

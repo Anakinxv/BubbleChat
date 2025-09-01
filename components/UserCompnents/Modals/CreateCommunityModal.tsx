@@ -11,6 +11,7 @@ import Configuración from "./CreateCommunity/Configuración";
 import Personalizacion from "./CreateCommunity/Personalizacion";
 import InvitarMiembros from "./CreateCommunity/InvitarMiembros";
 import Resumen from "./CreateCommunity/Resumen";
+import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 
 // Componente Progress personalizado
 const Progress = ({ value }: { value: number }) => {
@@ -84,12 +85,19 @@ function CreateCommunity({ isOpen, onClose }: CreateCommunityProps) {
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
+            className="theme-bg-background theme-text-primary rounded-4xl hover:opacity-50 transition duration-300 ease-in-out flex items-center gap-2"
           >
+            <ArrowLeft />
             Anterior
           </Button>
 
-          <Button onClick={handleNext} disabled={currentStep === STEPS.length}>
+          <Button
+            onClick={handleNext}
+            disabled={currentStep === STEPS.length}
+            className="bg-[var(--theme-primary)] text-white rounded-4xl hover:opacity-50 transition duration-300 ease-in-out flex items-center gap-2"
+          >
             {currentStep === STEPS.length ? "Crear Comunidad" : "Siguiente"}
+            {currentStep === STEPS.length ? <Plus /> : <ArrowRight />}
           </Button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import CommunityCards from "@/components/CommonComponents/CommunityCards";
 import CreateCommunity from "@/components/UserCompnents/Modals/CreateCommunityModal";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 function HomePage() {
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
 
@@ -44,16 +45,18 @@ function HomePage() {
         </div>
 
         {/* Sección inferior: Búsqueda y comunidades */}
-        <div className="w-full flex-shrink-0">
-          <div className="flex items-center p-4 max-w-md mx-auto w-full mb-6">
-            <AppInputs
+        <div className="w-full  flex-shrink-0">
+          {/* Sección de búsqueda y filtro de comunidades */}
+          <div className="flex items-center gap-4  p-4 max-w-md mx-auto w-full mb-6 ">
+            {/* Input de búsqueda con ícono de lupa */}
+            <Input
               placeholder="Search..."
-              icon={<Search />}
-              className="border border-gray-300 rounded-full py-2 px-4 w-full"
+              className={`bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] min-h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-4xl p-4 w-full`}
               type="text"
             />
-            <div className="ml-2 p-3 rounded-full h-[48px] w-[48px] flex items-center theme-text-secondary   justify-center cursor-pointer filter-btn">
-              <Filter size={32} className=" transition-colors duration-200" />
+            {/* Botón de filtro con ícono de filtro */}
+            <div className=" p-3 rounded-full h-[48px] w-[48px] flex items-center theme-text-secondary justify-center cursor-pointer filter-btn">
+              <Filter size={32} className="transition-colors duration-200" />
             </div>
           </div>
 

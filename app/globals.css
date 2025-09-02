@@ -135,3 +135,43 @@
 .uppy-Dashboard-AddFiles {
   border: 2px dashed var(--theme-border) !important;
 }
+
+/* Personalización del scrollbar para modo claro y oscuro */
+.scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+  border-radius: 4px;
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb {
+  background: var(--theme-textSecondary);
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-textSecondary);
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary);
+}
+
+/* Clase para que el scrollbar solo aparezca al hacer hover */
+.scrollbar-hover::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+}
+
+.dark .scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  background: var(--theme-textSecondary);
+}

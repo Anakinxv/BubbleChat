@@ -32,7 +32,7 @@ function MyProfile({
         <img
           src={avatar}
           alt={username}
-          className="w-28 h-28 rounded-full mb-2 "
+          className="w-35 h-35 rounded-full mb-2 "
         />
         <div className="flex flex-col justify-center items-center text-center">
           <h2 className="font-bold text-2xl theme-text-primary">{name}</h2>

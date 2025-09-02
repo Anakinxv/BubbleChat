@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MessageCircleWarning, Bell } from "lucide-react";
 import UserDropdown from "@/components/UserCompnents/UserDropdown";
 import Sugerencias from "@/components/UserCompnents/Modals/Sugerencias";
+import Notifications from "@/components/UserCompnents/Notifications";
 
 function UsersActions() {
   const [openSugerencias, setOpenSugerencias] = useState(false);
@@ -23,7 +24,7 @@ function UsersActions() {
 
       {/* Notificaciones */}
       <div className="relative group p-2 hover:bg-[var(--theme-surface)] rounded-full transition cursor-pointer">
-        <Bell size={20} className="text-[var(--theme-text)]" />
+        <Notifications />
         <span className="absolute left-1/2 -translate-x-1/2 top-10 opacity-0 group-hover:opacity-100 transition bg-[var(--theme-surface)] text-[var(--theme-text)] text-xs px-2 py-1 rounded-md shadow-lg pointer-events-none">
           Notificaciones
         </span>

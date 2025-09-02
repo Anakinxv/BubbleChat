@@ -14,10 +14,12 @@ import { useTheme } from "../CommonComponents/ThemeProvider";
 import MyProfile from "./Modals/MyProfile";
 import { useState } from "react";
 import Appearance from "./Modals/Appearance";
+import Configuración from "./Modals/Configuración";
 function UserDropdown() {
   // Estado para controlar el modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAppearanceModalOpen, setIsAppearanceModalOpen] = useState(false);
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false); // NUEVO ESTADO
 
   // Datos del usuario (puedes reemplazar con datos reales)
   const user = {
@@ -43,6 +45,10 @@ function UserDropdown() {
 
   const handleCloseAppearance = () => {
     setIsAppearanceModalOpen(false);
+  };
+
+  const handleCloseConfig = () => {
+    setIsConfigModalOpen(false);
   };
 
   return (
@@ -130,7 +136,10 @@ function UserDropdown() {
           </DropdownMenuItem>
 
           {/* Configuración */}
-          <DropdownMenuItem className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer">
+          <DropdownMenuItem
+            className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer"
+            onClick={() => setIsConfigModalOpen(true)} // ABRE MODAL
+          >
             <Settings className="mr-2 h-4 w-4" />
             <span>Configuración</span>
           </DropdownMenuItem>
@@ -157,6 +166,13 @@ function UserDropdown() {
         title="Apariencia"
         isOpen={isAppearanceModalOpen}
         onClose={handleCloseAppearance}
+      />
+
+      {/* Modal de configuración */}
+      <Configuración
+        title="Configuración"
+        isOpen={isConfigModalOpen}
+        onClose={handleCloseConfig}
       />
     </>
   );

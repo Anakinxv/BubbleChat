@@ -68,6 +68,12 @@ function CreateCommunity({ isOpen, onClose }: CreateCommunityProps) {
     onClose();
   };
 
+  const handleFinalSubmit = () => {
+    // Aquí va la lógica para crear la comunidad
+    console.log("Comunidad creada!");
+    handleClose();
+  };
+
   return (
     <BaseModal title={`Crear Comunidad`} isOpen={isOpen} onClose={handleClose}>
       <div className="space-y-6">
@@ -92,8 +98,10 @@ function CreateCommunity({ isOpen, onClose }: CreateCommunityProps) {
           </Button>
 
           <Button
-            onClick={handleNext}
-            disabled={currentStep === STEPS.length}
+            onClick={
+              currentStep === STEPS.length ? handleFinalSubmit : handleNext
+            }
+            disabled={false}
             className="bg-[var(--theme-primary)] text-white rounded-4xl hover:opacity-50 transition duration-300 ease-in-out flex items-center gap-2"
           >
             {currentStep === STEPS.length ? "Crear Comunidad" : "Siguiente"}

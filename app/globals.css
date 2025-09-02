@@ -114,3 +114,24 @@
   background-color: rgba(135, 126, 255, 0.371); /* igual que .theme-category */
   color: var(--theme-primary);
 }
+
+/* Custom Uppy styling */
+.uppy-Dashboard-inner {
+  background-color: var(--theme-surface) !important;
+}
+
+.uppy-Dashboard {
+  border-radius: 1.5rem !important;
+}
+
+.uppy-Dashboard-dropFilesHereHint {
+  color: var(--theme-textSecondary) !important;
+}
+
+.uppy-c-btn-primary {
+  background-color: var(--theme-primary) !important;
+}
+
+.uppy-Dashboard-AddFiles {
+  border: 2px dashed var(--theme-border) !important;
+}

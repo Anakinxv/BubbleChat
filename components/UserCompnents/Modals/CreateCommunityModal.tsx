@@ -27,8 +27,8 @@ const Progress = ({ value }: { value: number }) => {
 
 const STEPS = [
   { id: 1, name: "Información Básica", component: InformaciónBasica },
-  { id: 2, name: "Configuración", component: Configuración },
-  { id: 3, name: "Personalización", component: Personalizacion },
+  { id: 2, name: "Personalización", component: Personalizacion },
+  { id: 3, name: "Configuración", component: Configuración },
   { id: 4, name: "Invitar Miembros", component: InvitarMiembros },
   { id: 5, name: "Resumen", component: Resumen },
 ];

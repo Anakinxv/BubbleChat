@@ -16,9 +16,10 @@ type BubbleSelectsProps = {
     value: string;
     label: string;
   }>;
+  defaultValue?: string;
 };
 
-function BubbleSelects({ label, options }: BubbleSelectsProps) {
+function BubbleSelects({ label, options, defaultValue }: BubbleSelectsProps) {
   return (
     <div className="w-full flex flex-col mb-4" style={{ zIndex: 1100 }}>
       {label && (
@@ -28,7 +29,10 @@ function BubbleSelects({ label, options }: BubbleSelectsProps) {
       )}
       <Select>
         <SelectTrigger className="w-full theme-bg-surface theme-border shadow-lg rounded-4xl p-4 min-h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] focus:outline-none placeholder:text-[var(--theme-textSecondary)]">
-          <SelectValue placeholder="Select an option" />
+          <SelectValue
+            placeholder="Select an option"
+            defaultValue={defaultValue}
+          />
         </SelectTrigger>
         <SelectContent className="theme-bg-surface theme-border  theme-text-primary shadow-lg rounded-2xl">
           <SelectGroup>

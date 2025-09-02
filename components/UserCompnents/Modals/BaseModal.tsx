@@ -8,9 +8,16 @@ type modalProps = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  className?: string;
 };
 
-function BaseModal({ title, isOpen, onClose, children }: modalProps) {
+function BaseModal({
+  title,
+  isOpen,
+  onClose,
+  children,
+  className,
+}: modalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -42,7 +49,7 @@ function BaseModal({ title, isOpen, onClose, children }: modalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         ref={modalRef}
-        className="theme-bg-surface rounded-2xl shadow-lg w-full max-w-2xl p-6 relative border theme-modal-border h-auto max-h-[90vh] overflow-y-auto"
+        className={`theme-bg-surface rounded-2xl shadow-lg w-full max-w-2xl p-6 relative border theme-modal-border h-auto max-h-[90vh] overflow-y-auto ${className}`}
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-4">

@@ -41,7 +41,7 @@ function Configuración({ title, isOpen, onClose }: ConfiguraciónProps) {
               px-4 py-2
             "
           >
-            Configuración
+            Privacidad
           </TabsTrigger>
         </TabsList>
         <TabsContent value="info">

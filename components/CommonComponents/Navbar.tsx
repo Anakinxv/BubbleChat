@@ -5,7 +5,7 @@ import UsersActions from "./NavbarComponents.tsx/UsersActions";
 
 function Navbar() {
   return (
-    <nav className="grid grid-cols-3 items-center px-12 py-6 ">
+    <nav className="grid grid-cols-3 items-center px-6 py-6 ">
       <div id="background" className="flex justify-start items-center">
         <Image
           id="logo"

@@ -104,7 +104,7 @@ function BaseModal({
       >
         {/* Header - Fijo, no hace scroll */}
         <div
-          className={`flex justify-between items-center flex-shrink-0 border-b border-gray-200/20 ${styles.header}`}
+          className={`flex justify-between items-center flex-shrink-0  border-gray-200/20 ${styles.header}`}
         >
           <h2 className={`${styles.title} font-semibold pr-2`}>{title}</h2>
           <button

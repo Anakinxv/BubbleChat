@@ -46,15 +46,15 @@ export default function AuthLayout({
       )}
 
       {/* Content Section */}
-      <div className="w-full bg-[var(--theme-background)] p-4 sm:p-6 md:p-8 lg:p-12 min-h-screen flex flex-col">
+      <div className="w-full bg-[var(--theme-background)]  min-h-screen flex flex-col">
         {/* Theme Selector */}
         <div id="theme-selector" className="mb-4 lg:mb-6">
           <ThemeSelector />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col justify-center items-center">
-          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <div className="flex flex-col justify-center items-center h-full">
+          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl flex justify-center items-center">
             {children}
           </div>
         </div>

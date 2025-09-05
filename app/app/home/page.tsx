@@ -16,7 +16,7 @@ function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col items-center min-h-screen px-4 sm:px-8 py-12 justify-between">
+      <div className="flex flex-col items-center min-h-screen px-4 sm:px-8  justify-between">
         {/* Sección superior: Título, descripción y botón */}
         <div className="flex flex-col items-center space-y-8 flex-grow justify-center">
           <h1 className="text-4xl sm:text-7xl font-extrabold text-center">

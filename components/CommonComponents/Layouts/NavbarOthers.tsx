@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import UsersActions from "../NavbarComponents.tsx/UsersActions";
 
@@ -11,10 +11,18 @@ function NavbarOthers({
   dock?: React.ReactNode;
   pages?: React.ReactNode;
 }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; // o un loader
+
   return (
     <>
       {/* Navbar Superior */}
-      <nav className="sticky top-0 z-50 grid grid-cols-2 items-center justify-center px-6 mb-6 transparent ">
+      <nav className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-12 py-4 sm:py-6 bg-transparent">
         <div className="flex justify-start items-center ">
           <Image
             id="logo"
@@ -32,10 +40,10 @@ function NavbarOthers({
       </nav>
 
       {/* Layout con Sidebar + Pages */}
-      <div className="flex w-full mt-0 min-h-[calc(100vh-120px)]">
+      <div className="flex flex-col sm:flex-row w-full mt-0 min-h-[calc(100vh-120px)]">
         {/* Sidebar si existe */}
         {children && (
-          <aside className="px-6 sticky top-[120px] h-[calc(100vh-120px)]">
+          <aside className="px-2 sm:px-6 sticky top-[120px] h-[calc(100vh-120px)]">
             {children}
           </aside>
         )}

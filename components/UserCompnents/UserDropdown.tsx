@@ -13,7 +13,6 @@ import { User, Palette, Settings, LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "../CommonComponents/ThemeProvider";
 import MyProfile from "./Modals/MyProfile";
 import { useState } from "react";
-import Appearance from "./Modals/Appearance";
 import Configuración from "./Modals/Configuración";
 function UserDropdown() {
   // Estado para controlar el modal
@@ -126,15 +125,6 @@ function UserDropdown() {
             />
           </DropdownMenuItem>
 
-          {/* Apariencia */}
-          <DropdownMenuItem
-            className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer"
-            onClick={() => setIsAppearanceModalOpen(true)}
-          >
-            <Palette className="mr-2 h-4 w-4" />
-            <span>Apariencia</span>
-          </DropdownMenuItem>
-
           {/* Configuración */}
           <DropdownMenuItem
             className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer"
@@ -159,13 +149,6 @@ function UserDropdown() {
         title="Mi Perfil"
         isOpen={isModalOpen}
         onClose={handleCloseProfile}
-      />
-
-      {/* Modal de apariencia */}
-      <Appearance
-        title="Apariencia"
-        isOpen={isAppearanceModalOpen}
-        onClose={handleCloseAppearance}
       />
 
       {/* Modal de configuración */}

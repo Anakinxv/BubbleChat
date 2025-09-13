@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
-import ThemeSelector from "@/components/CommonComponents/ThemeSelector";
+
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useMediaQuery } from "react-responsive";
+import ThemeSelector from "@/components/CommonComponents/ThemeSelector";
 
 export default function AuthLayout({
   children,
@@ -27,23 +28,17 @@ export default function AuthLayout({
   }, [isDesktop]);
 
   return (
-    <div
-      className={`grid w-full min-h-screen ${
-        isDesktop ? "grid-cols-2" : "grid-cols-1"
-      }`}
-    >
-      {/* Background Image - Solo se renderiza en desktop */}
-      {isDesktop && (
-        <div id="background" className="relative h-full w-full">
-          <Image
-            src="https://res.cloudinary.com/dy2wtanhl/image/upload/v1756175143/WallpaperBubble_ahq5vf.png"
-            alt="background"
-            fill
-            className="object-cover pointer-events-none select-none"
-            priority
-          />
-        </div>
-      )}
+    <div className="grid w-full min-h-screen grid-cols-1 lg:grid-cols-2">
+      {/* Siempre renderizas la grilla con 2 columnas en lg, usando Tailwind */}
+      <div id="background" className="relative h-full w-full hidden lg:block">
+        <Image
+          src="https://res.cloudinary.com/dy2wtanhl/image/upload/v1756175143/WallpaperBubble_ahq5vf.png"
+          alt="background"
+          fill
+          className="object-cover pointer-events-none select-none"
+          priority
+        />
+      </div>
 
       {/* Content Section */}
       <div className="w-full bg-[var(--theme-background)]  min-h-screen flex flex-col">

@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
 import FormFormat from "@/components/AuthComponents/FormFormat";
-import AuthBubbles from "@/components/AuthComponents/AuthBubbles";
+
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import AuthRegisterbubble from "@/components/AuthComponents/AuthRegisterbubble";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
+import { Button } from "@/components/ui/button";
 
 function Register() {
   useGSAP(() => {
@@ -99,9 +100,7 @@ function Register() {
 
       <div id="create-account" className="mt-6">
         <Link href={"/auth/new-account"}>
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-            Crear una cuenta
-          </Primarybutton>
+          <Primarybutton>Crear una cuenta</Primarybutton>
         </Link>
       </div>
 
@@ -111,12 +110,12 @@ function Register() {
       >
         <p className="mr-1">¿Tienes una cuenta?</p>
         <Link href="/auth/login">
-          <Primarybutton
+          <Button
             className="theme-text-purple p-0 h-auto text-sm"
             variant="link"
           >
             Iniciar Sesión
-          </Primarybutton>
+          </Button>
         </Link>
       </div>
     </FormFormat>

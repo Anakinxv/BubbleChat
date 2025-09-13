@@ -27,13 +27,7 @@ function HomePage() {
             dinámicas
           </p>
           <div className="w-full max-w-xs sm:max-w-md lg:w-96 ">
-            <Primarybutton
-              className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[52px] sm:h-[60px] rounded-4xl font-semibold cursor-pointer
-          
-          
-          "
-              onClick={() => setIsCreateCommunityOpen(true)}
-            >
+            <Primarybutton onClick={() => setIsCreateCommunityOpen(true)}>
               <Plus className="mr-2 h-8 sm:h-10" /> Crear Comunidad
             </Primarybutton>
           </div>

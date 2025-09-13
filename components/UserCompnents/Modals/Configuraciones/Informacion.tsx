@@ -121,11 +121,7 @@ function Informacion() {
             onChange={(e) => handleInputChange("bio", e.target.value)}
           />
         </div>
-        {changed && (
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-sm sm:text-lg h-[44px] sm:h-[52px] rounded-2xl font-semibold cursor-pointer mt-2">
-            Guardar
-          </Primarybutton>
-        )}
+        {changed && <Primarybutton>Guardar</Primarybutton>}
       </div>
     </div>
   );

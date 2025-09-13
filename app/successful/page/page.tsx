@@ -40,9 +40,7 @@ function layout() {
     >
       <div id="next-button" className="mt-6">
         <Link href={"/auth/login"}>
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-            Volver al inicio de sesión
-          </Primarybutton>
+          <Primarybutton>Volver al inicio de sesión</Primarybutton>
         </Link>
       </div>
     </FormFormat>

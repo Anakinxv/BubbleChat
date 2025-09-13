@@ -45,9 +45,7 @@ function CrearContraseña() {
         <div id="next-button" className="mt-6">
           <Link href={"/app/home"}>
             {" "}
-            <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-              Siguiente
-            </Primarybutton>
+            <Primarybutton>Siguiente</Primarybutton>
           </Link>
         </div>
       </div>

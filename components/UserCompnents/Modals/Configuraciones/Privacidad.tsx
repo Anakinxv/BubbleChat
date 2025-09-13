@@ -47,9 +47,7 @@ function Privacidad() {
         value={form.confirmar}
         onChange={(e) => handleChange("confirmar", e.target.value)}
       />
-      <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[52px] sm:h-[60px] rounded-4xl font-semibold cursor-pointer">
-        Guardar Cambios
-      </Primarybutton>
+      <Primarybutton>Guardar Cambios</Primarybutton>
     </form>
   );
 }

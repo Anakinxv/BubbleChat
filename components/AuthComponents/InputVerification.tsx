@@ -7,7 +7,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import Primarybutton from "../CommonComponents/Primarybutton";
+import { Button } from "../ui/button";
 
 type InputVerificationProps = {
   id?: string;
@@ -80,9 +80,9 @@ function InputVerification({
         </InputOTP>
 
         <div id={id} className="w-full flex justify-center mt-4 mb-4">
-          <Primarybutton className="theme-text-purple" variant="link">
+          <Button className="theme-text-purple" variant={"link"}>
             ¿No recibiste el correo electrónico?
-          </Primarybutton>
+          </Button>
         </div>
       </div>
 

@@ -39,36 +39,36 @@ function FormInputs({
   };
 
   return (
-    <div className="w-full flex flex-col mb-4">
-      <div className="flex justify-between items-center mb-1    ">
+    <div className="w-full flex flex-col mb-4 px-0 sm:px-2">
+      <div className="flex flex-row justify-between items-center mb-1 gap-2">
         <Label
           htmlFor={name}
-          className="mb-1 text-left text-lg text-[var(--theme-text)] "
+          className="text-left text-base sm:text-lg text-[var(--theme-text)]"
           id={id}
         >
           {label}
-        </Label>{" "}
+        </Label>
         {type === "password" && (
           <Button
             type="button"
             variant="ghost"
-            className="  hover:bg-[var(--theme-secondary)]/10 rounded-2xl  text-[var(--theme-textSecondary)]"
+            className="hover:bg-[var(--theme-secondary)]/10 rounded-2xl text-[var(--theme-textSecondary)] px-2 py-1"
             onClick={handleShowPassword}
             id={id}
           >
             {showPassword ? (
-              <span className="flex items-center justify-center gap-1">
-                {" "}
+              <span className="flex items-center gap-1">
                 <EyeOff size={18} />
-                <p>Ocultar</p>
+                <p className="hidden sm:inline">Ocultar</p>
               </span>
             ) : (
-              <span className="flex items-center justify-center gap-1">
-                <Eye size={18} /> <p>Ocultar</p>
+              <span className="flex items-center gap-1">
+                <Eye size={18} />
+                <p className="hidden sm:inline">Mostrar</p>
               </span>
             )}
           </Button>
-        )}{" "}
+        )}
       </div>
 
       <div className="relative">
@@ -81,7 +81,7 @@ function FormInputs({
           onChange={onChange}
           required={required}
           disabled={disabled}
-          className="bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)  ] rounded-4xl "
+          className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5"
         />
       </div>
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}

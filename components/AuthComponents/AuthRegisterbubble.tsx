@@ -4,7 +4,7 @@ import GitHubDark from "../../public/GitHub_dark.svg";
 import GitHubLight from "../../public/GitHub_light.svg";
 import Google from "../../public/google.svg";
 import Image from "next/image";
-import { useTheme } from "../CommonComponents/ThemeProvider";
+import { useTheme } from "next-themes";
 
 type AuthBubbleType = {
   key: number;
@@ -15,10 +15,10 @@ type AuthBubbleType = {
 };
 
 function AuthRegisterbubble() {
-  const { currentTheme } = useTheme();
+  const { theme } = useTheme();
 
   // Fix: Check if theme is 'dark' instead of truthy value
-  const isDarkTheme = currentTheme.id === "dark";
+  const isDarkTheme = theme === "dark";
 
   const authBubbles: AuthBubbleType[] = [
     {

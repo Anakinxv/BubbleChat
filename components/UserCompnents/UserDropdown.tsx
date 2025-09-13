@@ -10,7 +10,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Palette, Settings, LogOut, Moon, Sun } from "lucide-react";
-import { useTheme } from "../CommonComponents/ThemeProvider";
+import { useTheme } from "next-themes";
 import MyProfile from "./Modals/MyProfile";
 import { useState } from "react";
 import Configuración from "./Modals/Configuración";
@@ -28,10 +28,10 @@ function UserDropdown() {
       "https://i.pinimg.com/736x/bb/47/b3/bb47b3fbcef00d2380332380b6df4cb8.jpg",
   };
 
-  const { currentTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme(); // 'theme' = 'light' | 'dark'
 
   const handleThemeToggle = () => {
-    setTheme(currentTheme.id === "dark" ? "light" : "dark");
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const handleOpenProfile = () => {
@@ -110,16 +110,14 @@ function UserDropdown() {
             onClick={handleThemeToggle}
             className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer"
           >
-            {currentTheme.id === "dark" ? (
+            {theme === "dark" ? (
               <Sun className="mr-2 h-4 w-4" />
             ) : (
               <Moon className="mr-2 h-4 w-4" />
             )}
-            <span>
-              {currentTheme.id === "dark" ? "Modo claro" : "Modo oscuro"}
-            </span>
+            <span>{theme === "dark" ? "Modo claro" : "Modo oscuro"}</span>
             <Switch
-              checked={currentTheme.id === "dark"}
+              checked={theme === "dark"}
               onCheckedChange={handleThemeToggle}
               className="ml-auto"
             />

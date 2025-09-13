@@ -67,9 +67,7 @@ function NewAccountPage() {
 
       <div id="create-account" className="mt-6">
         <Link href={"/auth/verify-email"}>
-          <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-            Siguiente
-          </Primarybutton>
+          <Primarybutton>Siguiente</Primarybutton>
         </Link>
       </div>
     </FormFormat>

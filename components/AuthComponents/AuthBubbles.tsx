@@ -5,7 +5,8 @@ import GitHubDark from "../../public/GitHub_dark.svg";
 import GitHubLight from "../../public/GitHub_light.svg";
 import Google from "../../public/google.svg";
 import Image from "next/image";
-import { useTheme } from "../CommonComponents/ThemeProvider";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 type AuthBubbleType = {
   id: number;
@@ -14,10 +15,20 @@ type AuthBubbleType = {
 };
 
 function AuthBubbles({ className }: { className?: string }) {
-  const { currentTheme } = useTheme();
+  const { theme, setTheme } = useTheme(); // 'theme' = 'light' | 'dark'`
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null; // Evita el renderizado hasta que el componente esté montado
+  }
 
   // Fix: Check if theme is 'dark' instead of truthy value
-  const isDarkTheme = currentTheme.id === "dark";
+  const isDarkTheme = theme === "dark";
 
   const authBubbles: AuthBubbleType[] = [
     {

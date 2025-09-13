@@ -9,6 +9,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
+import { Button } from "@/components/ui/button";
 function Page() {
   useGSAP(() => {
     // Timeline principal que controla TODAS las animaciones
@@ -67,18 +68,16 @@ function Page() {
           <div className="flex justify-end mt-2">
             <Link href={"/auth/recover-password"}>
               {" "}
-              <Primarybutton className="theme-text-purple" variant={"link"}>
+              <Button className="theme-text-purple" variant={"link"}>
                 Olvidaste tu contraseña?
-              </Primarybutton>
+              </Button>
             </Link>
           </div>
         </div>
 
         <div id="login-button" className="mt-6">
           <Link href={"/app/home"}>
-            <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-              Iniciar sesión
-            </Primarybutton>{" "}
+            <Primarybutton>Iniciar sesión</Primarybutton>{" "}
           </Link>
         </div>
 
@@ -103,12 +102,12 @@ function Page() {
         >
           <p className="mr-1">¿No tienes una cuenta?</p>
           <Link href="/auth/register">
-            <Primarybutton
+            <Button
               className="theme-text-purple p-0 h-auto text-sm"
               variant="link"
             >
               Regístrate
-            </Primarybutton>
+            </Button>
           </Link>
         </div>
       </FormFormat>

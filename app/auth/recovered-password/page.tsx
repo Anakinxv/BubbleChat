@@ -66,9 +66,7 @@ function RecoverPassword() {
       <div>
         <div id="next-button" className="mt-6">
           <Link href={"/successful/page"}>
-            <Primarybutton className="theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[60px] rounded-4xl font-semibold">
-              Guardar contraseña
-            </Primarybutton>
+            <Primarybutton>Guardar contraseña</Primarybutton>
           </Link>
         </div>
       </div>

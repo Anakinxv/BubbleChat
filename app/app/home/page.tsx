@@ -11,6 +11,7 @@ import CommunityCards from "@/components/CommonComponents/CommunityCards";
 import CreateCommunity from "@/components/UserCompnents/Modals/CreateCommunityModal";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+
 function HomePage() {
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
 

@@ -1,6 +1,5 @@
 // SVG imports
-import AppleLight from "../../public/Apple_light.svg";
-import AppleDark from "../../public/Apple_dark.svg";
+import Facebook from "../../public/facebook.svg";
 import GitHubDark from "../../public/GitHub_dark.svg";
 import GitHubLight from "../../public/GitHub_light.svg";
 import Google from "../../public/google.svg";
@@ -33,7 +32,7 @@ function AuthBubbles({ className }: { className?: string }) {
   const authBubbles: AuthBubbleType[] = [
     {
       id: 1,
-      src: isDarkTheme ? AppleDark.src : AppleLight.src,
+      src: Facebook.src,
       alt: "Auth bubble 1",
     },
     {

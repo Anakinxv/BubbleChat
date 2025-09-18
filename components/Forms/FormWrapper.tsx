@@ -22,6 +22,8 @@ export function FormWrapper<T extends ZodSchema<any, any, any>>({
     defaultValues,
   });
 
+  console.log(defaultValues);
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">

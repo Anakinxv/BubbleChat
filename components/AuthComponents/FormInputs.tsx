@@ -6,7 +6,6 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useFormContext } from "react-hook-form";
-import { string } from "zod";
 
 type FormInputsProps = {
   id?: string;
@@ -14,7 +13,7 @@ type FormInputsProps = {
   placeholder?: string;
   name?: string;
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
   required?: boolean;
   disabled?: boolean;
   label?: string;
@@ -26,7 +25,7 @@ function FormInputs({
   placeholder,
   name = "",
   value,
-  onChange,
+
   required,
 
   disabled,
@@ -79,13 +78,12 @@ function FormInputs({
       <div className="relative">
         <Input
           id={id}
-          name={name}
           placeholder={placeholder}
           type={type === "password" && showPassword ? "text" : type}
           value={value}
-          onChange={onChange}
           required={required}
           disabled={disabled}
+          {...register(name)}
           className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5"
         />
       </div>

@@ -17,6 +17,7 @@ type buttonProps = {
   disabled?: boolean;
   className?: string;
   variant?: VariantType;
+  type?: "button" | "submit" | "reset";
 };
 
 function Primarybutton({
@@ -26,11 +27,13 @@ function Primarybutton({
   onClick,
   disabled,
   className,
+  type,
   variant = "default",
 }: buttonProps) {
   return (
     <Button
       id={id}
+      type={type}
       className={cn(
         "theme-bg-primary text-white w-full hover:opacity-90 text-lg h-[52px] sm:h-[60px] rounded-4xl font-semibold cursor-pointer",
         className

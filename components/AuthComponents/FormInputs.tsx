@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import { useFormContext } from "react-hook-form";
+import { string } from "zod";
+
 type FormInputsProps = {
   id?: string;
   type?: string;
@@ -15,7 +16,6 @@ type FormInputsProps = {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  error?: string;
   disabled?: boolean;
   label?: string;
 };
@@ -28,7 +28,7 @@ function FormInputs({
   value,
   onChange,
   required,
-  error,
+
   disabled,
   label,
 }: FormInputsProps) {
@@ -37,6 +37,11 @@ function FormInputs({
   const handleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
+
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <div className="w-full flex flex-col mb-4 px-0 sm:px-2">
@@ -84,7 +89,11 @@ function FormInputs({
           className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5"
         />
       </div>
-      {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
+      {errors[name] && (
+        <span className="text-red-500 text-sm mt-1">
+          {String(errors[name]?.message)}
+        </span>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import FormFormat from "@/components/AuthComponents/FormFormat";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import AuthRegisterbubble from "@/components/AuthComponents/AuthRegisterbubble";
+import AuthRegisterBubble from "@/components/AuthComponents/AuthRegisterBubble";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import { Button } from "@/components/ui/button";
 
@@ -86,7 +86,7 @@ function Register() {
   return (
     <FormFormat title="Únete Hoy a" accent="BubbleChat!">
       <div className="flex flex-col gap-4">
-        <AuthRegisterbubble />
+        <AuthRegisterBubble />
       </div>
 
       <div

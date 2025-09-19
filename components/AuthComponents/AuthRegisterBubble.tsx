@@ -12,74 +12,62 @@ type AuthBubbleType = {
   id: number;
   src: string;
   alt: string;
+  text: string;
   provider: string;
 };
 
-function AuthBubbles({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
-  const isDarkTheme = theme === "dark";
+function AuthRegisterBubble() {
+  const { resolvedTheme } = useTheme();
+  const isDarkTheme = resolvedTheme === "dark";
 
   const authBubbles: AuthBubbleType[] = [
     {
       id: 1,
       src: Facebook.src,
-      alt: "Facebook Auth",
-      provider: "facebook",
+      alt: "Auth bubble 1",
+      text: "Registrarse con Apple",
+      provider: "apple",
     },
     {
       id: 2,
       src: Google.src,
-      alt: "Google Auth",
+      alt: "Auth bubble 3",
+      text: "Registrarse con Google",
       provider: "google",
     },
     {
       id: 3,
       src: isDarkTheme ? GitHubDark.src : GitHubLight.src,
-      alt: "GitHub Auth",
+      alt: "Auth bubble 2",
+      text: "Registrarse con GitHub",
       provider: "github",
     },
   ];
-
-  const handleAuthBubbleClick = async (provider: string) => {
-    try {
-      await handleSignIn(provider);
-    } catch (error) {
-      console.error("Error during sign in:", error);
-    }
-  };
 
   return (
     <>
       {authBubbles.map((bubble) => (
         <div
           key={bubble.id}
-          className="bg-[var(--theme-color-surface)] border border-[var(--theme-border)] 
+          className="auth-bubble bg-[var(--theme-color-surface)] border border-[var(--theme-border)] 
                      h-[50px] rounded-full flex items-center justify-center hover:opacity-50 
-                     transition-opacity duration-300 ease-in-out cursor-pointer"
-          onClick={() => handleAuthBubbleClick(bubble.provider)}
+                     transition-opacity duration-300 ease-in-out gap-2 cursor-pointer"
+          onClick={() => handleSignIn(bubble.provider)}
         >
           <Image
             src={bubble.src}
             alt={bubble.alt}
             className="pointer-events-none"
-            width={24}
-            height={24}
+            width={20}
+            height={20}
           />
+          <span className="ml-2 text-[var(--theme-text)] text-lg font-medium">
+            {bubble.text}
+          </span>
         </div>
       ))}
     </>
   );
 }
 
-export default AuthBubbles;
+export default AuthRegisterBubble;

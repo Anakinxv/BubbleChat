@@ -30,4 +30,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     signIn: "/auth/login",
     newUser: "/auth/register",
   },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Redirige siempre al dashboard después de login
+      return `${baseUrl}/app/home`;
+    },
+  },
 });

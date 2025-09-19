@@ -9,26 +9,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Palette, Settings, LogOut, Moon, Sun } from "lucide-react";
+import { User, Settings, LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import MyProfile from "./Modals/MyProfile";
 import { useState } from "react";
 import Configuración from "./Modals/Configuración";
-function UserDropdown() {
-  // Estado para controlar el modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAppearanceModalOpen, setIsAppearanceModalOpen] = useState(false);
-  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false); // NUEVO ESTADO
+import { useSession, signOut } from "next-auth/react"; // Importa signOut
 
-  // Datos del usuario (puedes reemplazar con datos reales)
+function UserDropdown() {
+  // Estado para controlar los modales
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+
+  const { data: session } = useSession();
+
+  // Datos del usuario
   const user = {
-    name: "Emmanuel",
-    email: "emmanuel@example.com",
+    name: session?.user?.name ?? "",
+    email: session?.user?.email ?? "",
     avatar:
-      "https://i.pinimg.com/736x/bb/47/b3/bb47b3fbcef00d2380332380b6df4cb8.jpg",
+      session?.user?.image ||
+      "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
   };
 
-  const { theme, setTheme } = useTheme(); // 'theme' = 'light' | 'dark'
+  const { theme, setTheme } = useTheme();
 
   const handleThemeToggle = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -42,10 +46,6 @@ function UserDropdown() {
     setIsModalOpen(false);
   };
 
-  const handleCloseAppearance = () => {
-    setIsAppearanceModalOpen(false);
-  };
-
   const handleCloseConfig = () => {
     setIsConfigModalOpen(false);
   };
@@ -55,13 +55,15 @@ function UserDropdown() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-[var(--theme-surface)] border-[var(--theme-border)] cursor-pointer">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarImage src={user.avatar} alt={user.name || "User"} />
+            <AvatarFallback>
+              {user.name ? user.name.charAt(0).toUpperCase() : "?"}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="w-56 theme-bg-surface theme-border shadow-lg rounded-2xl "
+          className="w-65 theme-bg-surface theme-border shadow-lg rounded-2xl" // Cambia w-56 por w-72
           align="end"
           alignOffset={-5}
           sideOffset={5}
@@ -72,24 +74,22 @@ function UserDropdown() {
               <Avatar className="h-10 w-10 cursor-pointer bg-[var(--theme-surface)] border-[var(--theme-border)]">
                 <AvatarImage src={user.avatar} alt="User avatar" />
                 <AvatarFallback>
-                  {user.name.charAt(0).toUpperCase()}
+                  {user.name ? user.name.charAt(0).toUpperCase() : "?"}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <div className="flex flex-col">
-                  <span
-                    className="font-semibold text-[var(--theme-text)] truncate"
-                    title={user.name}
-                  >
-                    {user.name}
-                  </span>
-                  <span
-                    className="text-xs text-[var(--theme-textSecondary)] truncate"
-                    title={user.email}
-                  >
-                    {user.email}
-                  </span>
-                </div>
+              <div className="flex flex-col max-w-[160px]">
+                <span
+                  className="font-semibold text-[var(--theme-text)] truncate overflow-hidden text-ellipsis"
+                  title={user.name}
+                >
+                  {user.name || "Invitado"}
+                </span>
+                <span
+                  className="text-xs text-[var(--theme-textSecondary)] "
+                  title={user.email}
+                >
+                  {user.email || ""}
+                </span>
               </div>
             </div>
           </DropdownMenuLabel>
@@ -126,7 +126,7 @@ function UserDropdown() {
           {/* Configuración */}
           <DropdownMenuItem
             className="text-[var(--theme-textSecondary)] hover:text-[var(--theme-text)] cursor-pointer"
-            onClick={() => setIsConfigModalOpen(true)} // ABRE MODAL
+            onClick={() => setIsConfigModalOpen(true)}
           >
             <Settings className="mr-2 h-4 w-4" />
             <span>Configuración</span>
@@ -135,7 +135,10 @@ function UserDropdown() {
           <DropdownMenuSeparator className="separator" />
 
           {/* Cerrar sesión */}
-          <DropdownMenuItem className="text-red-600 hover:text-red-700 cursor-pointer">
+          <DropdownMenuItem
+            className="text-red-600 hover:text-red-700 cursor-pointer"
+            onClick={() => signOut()} // Cierra sesión correctamente
+          >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Cerrar sesión</span>
           </DropdownMenuItem>

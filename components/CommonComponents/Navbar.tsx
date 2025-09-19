@@ -16,8 +16,8 @@ function Navbar() {
           alt="Logo"
           className="pointer-events-none select-none"
           priority
-          height={80}
-          width={80}
+          height={120}
+          width={120}
         />
       </div>
       <div className="flex justify-center mb-2 sm:mb-0">

@@ -3,7 +3,7 @@ import { Poppins, Reenie_Beanie } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/CommonComponents/ThemeProvider";
 import QueryProvider from "@/QueryProvider";
-
+import SessionProvider from "@/app/SessionProvider";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -30,7 +30,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${reenie.variable} antialiased`}>
         <ThemeProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <SessionProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

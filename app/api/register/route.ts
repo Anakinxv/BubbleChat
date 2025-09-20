@@ -3,100 +3,95 @@ import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-import { registerSchema } from "@/schemas/Auth.schema";
+import { registerStepOneSchema } from "@/schemas/Auth.schema";
+import { z } from "zod";
 import generateUniqueUsername from "@/lib/generateUniqueUsername";
-import { headers } from "next/headers";
-import rateLimit from "@/lib/rateLimit";
-import { redirect } from "next/navigation";
+
+// Crear un schema específico para el backend que no incluya confirmPassword
+const backendRegisterSchema = registerStepOneSchema.extend({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 export async function POST(request: NextRequest) {
-  const data = await request.json();
+  try {
+    const data = await request.json();
 
-  const { email, username, password } = data;
+    // Validar input con el schema del backend (sin confirmPassword)
+    const parseResult = backendRegisterSchema.safeParse(data);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: parseResult.error.issues[0].message },
+        { status: 400 }
+      );
+    }
 
-  const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
-  const { success } = await rateLimit.limit(ip);
+    const { name, lastName, email, password } = parseResult.data;
+    const fullName = `${name} ${lastName}`.trim();
+    const usernameBase = `${name}${lastName}`.replace(/\s+/g, "").toLowerCase();
 
-  if (!success) {
-    return redirect("/too-fast");
-  }
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
 
-  if (!email) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
-  }
-  if (!username) {
-    return NextResponse.json(
-      { error: "Username is required" },
-      { status: 400 }
-    );
-  }
-  if (!password) {
-    return NextResponse.json(
-      { error: "Password is required" },
-      { status: 400 }
-    );
-  }
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 400 }
+      );
+    }
 
-  // Validate input with schema
-  const parseResult = registerSchema.safeParse(data);
-  if (!parseResult.success) {
-    return NextResponse.json(
-      { error: parseResult.error.message },
-      { status: 400 }
-    );
-  }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existingUser) {
-    return NextResponse.json({ error: "User already exists" }, { status: 400 });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = await prisma.user.create({
-    data: {
-      email,
-      emailVerified: null,
-      id: uuidv4(),
-      // Prisma maneja createdAt y updatedAt automáticamente
-    },
-  });
-
-  const uniqueUsername = await generateUniqueUsername(username);
-
-  // Create profile after user is created
-  const newProfile = await prisma.profile.create({
-    data: {
-      username: uniqueUsername,
-      userId: newUser.id,
-    },
-  });
-
-  const Account = await prisma.account.create({
-    data: {
-      userId: newUser.id,
-      type: "credentials",
-      provider: "credentials",
-      providerAccountId: newUser.id,
-      password: hashedPassword,
-    },
-  });
-
-  return NextResponse.json(
-    {
-      message: "User registered successfully",
-      user: {
-        id: newUser.id,
-        email: newUser.email,
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        name: fullName,
+        emailVerified: null,
+        id: uuidv4(),
       },
-      profile: {
-        id: newProfile.id,
-        username: newProfile.username,
+    });
+
+    const uniqueUsername = await generateUniqueUsername(usernameBase);
+
+    const newProfile = await prisma.profile.create({
+      data: {
+        username: uniqueUsername,
+        displayName: fullName,
+        userId: newUser.id,
       },
-    },
-    { status: 201 }
-  );
+    });
+
+    await prisma.account.create({
+      data: {
+        userId: newUser.id,
+        type: "credentials",
+        provider: "credentials",
+        providerAccountId: newUser.id,
+        password: hashedPassword,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "User registered successfully",
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+        },
+        profile: {
+          id: newProfile.id,
+          username: newProfile.username,
+          displayName: newProfile.displayName,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("Error en el endpoint /api/register:", err);
+    return NextResponse.json(
+      { error: "Internal server error", details: String(err) },
+      { status: 500 }
+    );
+  }
 }

@@ -1,13 +1,11 @@
-// SVG imports
 import Facebook from "../../public/facebook.svg";
 import GitHubDark from "../../public/GitHub_dark.svg";
 import GitHubLight from "../../public/GitHub_light.svg";
 import Google from "../../public/google.svg";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { handleSignIn } from "./HandleAuth";
-
+import { useEffect, useState } from "react";
 type AuthBubbleType = {
   id: number;
   src: string;
@@ -19,7 +17,14 @@ type AuthBubbleType = {
 function AuthRegisterBubble() {
   const { resolvedTheme } = useTheme();
   const isDarkTheme = resolvedTheme === "dark";
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) {
+    return null;
+  }
   const authBubbles: AuthBubbleType[] = [
     {
       id: 1,

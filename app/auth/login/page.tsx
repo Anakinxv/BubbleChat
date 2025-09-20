@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { loginSchema } from "@/schemas/Auth.schema";
 import { FormWrapper } from "@/components/Forms/FormWrapper";
 import type { LoginSchemaType } from "@/types/Auth.types";
-import { signIn } from "@/auth";
+
 function Page() {
   useGSAP(() => {
     const masterTimeline = gsap.timeline({

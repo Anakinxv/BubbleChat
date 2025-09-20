@@ -12,7 +12,6 @@ type FormInputsProps = {
   type?: string;
   placeholder?: string;
   name?: string;
-  value?: string;
 
   required?: boolean;
   disabled?: boolean;
@@ -21,10 +20,9 @@ type FormInputsProps = {
 
 function FormInputs({
   id,
-  type = "text",
+  type,
   placeholder,
   name = "",
-  value,
 
   required,
 
@@ -48,7 +46,6 @@ function FormInputs({
         <Label
           htmlFor={name}
           className="text-left text-base sm:text-lg text-[var(--theme-text)]"
-          id={id}
         >
           {label}
         </Label>
@@ -58,7 +55,6 @@ function FormInputs({
             variant="ghost"
             className="hover:bg-[var(--theme-secondary)]/10 rounded-2xl text-[var(--theme-textSecondary)] px-2 py-1"
             onClick={handleShowPassword}
-            id={id}
           >
             {showPassword ? (
               <span className="flex items-center gap-1">
@@ -80,7 +76,6 @@ function FormInputs({
           id={id}
           placeholder={placeholder}
           type={type === "password" && showPassword ? "text" : type}
-          value={value}
           required={required}
           disabled={disabled}
           {...register(name)}

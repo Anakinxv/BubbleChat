@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import FormFormat from "@/components/AuthComponents/FormFormat";
-
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";

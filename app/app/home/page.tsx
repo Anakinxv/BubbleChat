@@ -1,12 +1,11 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/CommonComponents/Navbar";
+
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import { Plus, Filter, Search } from "lucide-react";
 import CardCommunity from "@/components/CommonComponents/CardCommunity";
-import AppInputs from "@/components/CommonComponents/AppInputs";
-import { Button } from "@/components/ui/button";
+
 import CommunityCards from "@/components/CommonComponents/CommunityCards";
 import CreateCommunity from "@/components/UserCompnents/Modals/CreateCommunityModal";
 import { useState } from "react";

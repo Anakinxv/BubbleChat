@@ -22,8 +22,6 @@ export function FormWrapper<T extends ZodSchema<any, any, any>>({
     defaultValues,
   });
 
-  console.log(defaultValues);
-
   return (
     <FormProvider {...methods}>
       <UIForm {...methods}>

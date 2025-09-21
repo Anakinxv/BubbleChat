@@ -86,9 +86,10 @@ enum ReactionEmoji {
 // ====================== MODELS ======================
 
 model User {
-  id              String    @id @default(uuid())
+  id              String    @id @default(cuid())
   name            String?
-  email           String?   @unique
+  email           String    @unique
+  password        String?
   emailVerified   DateTime?
   image           String?
   createdAt       DateTime  @default(now())
@@ -133,12 +134,11 @@ model Profile {
 }
 
 model Account {
-  id                String   @id @default(uuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  password        String?
   refresh_token     String?
   access_token      String?
   expires_at        Int?
@@ -146,8 +146,10 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  user              User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])

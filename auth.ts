@@ -50,12 +50,79 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   ],
   pages: {
     signIn: "/auth/login",
-    newUser: "/auth/register",
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
       // Redirige siempre al dashboard después de login
       return `${baseUrl}/app/home`;
+    },
+
+    async signIn({ user, account, profile }) {
+      const oauthProviders = ["google", "facebook", "github"];
+      if (user && account && oauthProviders.includes(account.provider)) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+
+        if (existingUser) {
+          // Solo actualiza la imagen si el perfil no tiene avatar
+          const profileDb = await prisma.profile.findFirst({
+            where: { userId: existingUser.id },
+          });
+
+          if (
+            (profile?.picture || profile?.avatar_url) &&
+            (!profileDb?.avatarUrl || profileDb.avatarUrl === "")
+          ) {
+            const imageUrl = profile.picture || profile.avatar_url;
+            await prisma.user.update({
+              where: { id: existingUser.id },
+              data: { image: imageUrl },
+            });
+            await prisma.profile.updateMany({
+              where: { userId: existingUser.id },
+              data: { avatarUrl: imageUrl },
+            });
+          }
+          // Si el usuario existe, verifica si ya tiene esta cuenta vinculada
+          const existingAccount = await prisma.account.findUnique({
+            where: {
+              provider_providerAccountId: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
+          });
+
+          if (!existingAccount) {
+            // Vincula la cuenta OAuth al usuario existente
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                refresh_token: account.refresh_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+                session_state: account.session_state
+                  ? String(account.session_state)
+                  : undefined,
+              },
+            });
+          }
+          return true;
+        } else {
+          // Si no existe el usuario, permite que NextAuth lo cree automáticamente
+          return true;
+        }
+      }
+
+      // Para credenciales y otros casos
+      return true;
     },
   },
 });

@@ -27,10 +27,10 @@ function UserDropdown() {
   const user = {
     name: session?.user?.name ?? "",
     email: session?.user?.email ?? "",
-    avatar:
-      session?.user?.image ||
-      "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
+    avatar: session?.user?.image ?? "",
   };
+
+  console.log("user session:", session);
 
   const { theme, setTheme } = useTheme();
 

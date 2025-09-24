@@ -95,6 +95,12 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  // Tokens para recuperación y verificación
+  resetPasswordToken        String?
+  resetPasswordExpiresAt    DateTime?
+  verificationToken         String?
+  verificationTokenExpiresAt DateTime?
+
   profile         Profile?
   accounts        Account[]
   sessions        Session[]
@@ -110,8 +116,6 @@ model User {
   messages        Message[]
   callsInitiated  Call[] @relation("CallInitiator")
   callParticipants CallParticipant[]
-
-  // Agregar estas dos relaciones faltantes:
   ownedCommunities Community[] @relation("CommunityOwner")
   reactions       Reaction[]
 
@@ -166,14 +170,6 @@ model Session {
   @@index([expires])
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@id([identifier, token])
-  @@index([expires])
-}
 
 model FriendShip {
   id          String            @id @default(uuid())

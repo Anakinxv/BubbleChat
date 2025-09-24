@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 import FormFormat from "@/components/AuthComponents/FormFormat";
@@ -44,6 +44,7 @@ function NewAccountPage() {
   });
 
   const setFirstStepData = useAppStore((state) => state.setregisterStepOneData);
+  const registerStepOneData = useAppStore((state) => state.registerStepOneData);
   const error = useAppStore((state) => state.error);
   const Router = useRouter();
   const handleFirstStepSubmit = (data: RegisterStepOneSchemaType) => {
@@ -59,7 +60,11 @@ function NewAccountPage() {
     <FormFormat title="Crea una cuenta en" accent="BubbleChat!">
       <FormWrapper
         schema={registerStepOneSchema}
-        defaultValues={{ name: "", lastName: "", email: "" }}
+        defaultValues={{
+          name: registerStepOneData.name,
+          lastName: registerStepOneData.lastName,
+          email: registerStepOneData.email,
+        }}
         onSubmit={handleFirstStepSubmit}
       >
         <FormInputs

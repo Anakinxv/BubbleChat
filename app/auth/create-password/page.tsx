@@ -11,6 +11,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { FormWrapper } from "@/components/Forms/FormWrapper";
 import { registerPasswordSchema } from "@/schemas/Auth.schema";
 import { RegisterPasswordSchemaType } from "@/types/Auth.types";
+import { useRouter } from "next/navigation";
 
 function CrearContraseña() {
   useGSAP(() => {
@@ -30,6 +31,7 @@ function CrearContraseña() {
   const setregister = useAppStore((state) => state.setregister);
   const error = useAppStore((state) => state.error);
   const isLoading = useAppStore((state) => state.isloading);
+  const Router = useRouter();
 
   const handleSecondStepSubmit = async (data: RegisterPasswordSchemaType) => {
     try {
@@ -49,6 +51,11 @@ function CrearContraseña() {
 
         await setregister(mergeData);
         console.log(mergeData);
+
+        // Si no hay error, redirige
+        if (!useAppStore.getState().error) {
+          Router.push("/auth/login");
+        }
       }
     } catch (error) {
       console.error(error);

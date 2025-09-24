@@ -1,11 +1,13 @@
 import { StateCreator } from "zustand";
-
+import { persist, createJSONStorage } from "zustand/middleware";
 import type {
   RegisterStepOneSchemaType,
   RegisterPasswordSchemaType,
 } from "@/types/Auth.types";
+import { useRouter } from "next/router";
 
 import { registerService } from "@/app/actions/auth/register";
+
 export interface AuthStateInterface {
   user: {
     id: string;
@@ -37,61 +39,74 @@ export interface AuthStateInterface {
   ) => Promise<void>;
 }
 
-export const createAuthSlice: StateCreator<AuthStateInterface> = (
-  set,
-  get
-) => ({
-  user: {
-    id: "",
-    name: "",
-    username: "",
-    displayName: "",
-    avatar: null,
-    email: "",
-    emailVerified: null,
-    bio: null,
-  },
+export const createAuthSlice: StateCreator<
+  AuthStateInterface,
+  [],
+  [["zustand/persist", unknown]]
+> = persist(
+  (set, get) => ({
+    user: {
+      id: "",
+      name: "",
+      username: "",
+      displayName: "",
+      avatar: null,
+      email: "",
+      emailVerified: null,
+      bio: null,
+    },
 
-  registerStepOneData: {
-    name: "",
-    lastName: "",
-    email: "",
-  },
-  registerPasswordData: {
-    password: "",
-    confirmPassword: "",
-  },
+    registerStepOneData: {
+      name: "",
+      lastName: "",
+      email: "",
+    },
+    registerPasswordData: {
+      password: "",
+      confirmPassword: "",
+    },
 
-  error: null,
-  isloading: false,
-  setregisterStepOneData: (data) => {
-    set({
-      registerStepOneData: data,
-    });
-  },
-  setregisterPasswordData: (data) => {
-    set({ registerPasswordData: data });
-  },
+    error: null,
+    isloading: false,
+    setregisterStepOneData: (data) => {
+      set({
+        registerStepOneData: data,
+      });
+    },
+    setregisterPasswordData: (data) => {
+      set({ registerPasswordData: data });
+    },
 
-  setregister: async (data) => {
-    set({ isloading: true, error: null });
+    setregister: async (data) => {
+      set({ isloading: true, error: null });
 
-    try {
-      const response = await registerService(data);
-      console.log(response);
+      try {
+        const response = await registerService(data);
 
-      if (response.error) {
-        set({ error: response.error });
+        if (response.success) {
+          set({
+            registerStepOneData: { name: "", lastName: "", email: "" },
+            registerPasswordData: { password: "", confirmPassword: "" },
+          });
+        }
+
+        if (response.error) {
+          set({ error: response.error });
+        }
+        set({ isloading: false });
+      } catch (error) {
+        if (error instanceof Error) {
+          set({ error: error.message });
+        } else {
+          set({ error: "Ocurrió un error desconocido" });
+        }
+        set({ isloading: false });
+        console.error("Error en setregister:", error);
       }
-      set({ isloading: false });
-    } catch (error) {
-      if (error instanceof Error) {
-        set({ error: error.message });
-      } else {
-        set({ error: "Ocurrió un error desconocido" });
-      }
-      set({ isloading: false });
-      console.error("Error en setregister:", error);
-    }
-  },
-});
+    },
+  }),
+  {
+    name: "auth-storage",
+    storage: createJSONStorage(() => localStorage),
+  }
+);

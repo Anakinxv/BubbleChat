@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import generateUniqueUsername from "@/lib/generateUniqueUsername";
-import { redirect } from "next/navigation";
+
 import {
   registerPasswordSchema,
   registerStepOneSchema,
@@ -27,8 +27,8 @@ export async function registerService(data: RegisterData) {
       email,
     });
     if (!stepOneParsed.success) {
-      const firstError = stepOneParsed.error.issues[0].message;
-      throw new Error(firstError);
+      const firstError = stepOneParsed.error.issues[0];
+      throw new Error(firstError.message);
     }
 
     const passwordParsed = registerPasswordSchema.safeParse({
@@ -36,8 +36,8 @@ export async function registerService(data: RegisterData) {
       confirmPassword: data.confirmPassword,
     });
     if (!passwordParsed.success) {
-      const firstError = passwordParsed.error.issues[0].message;
-      throw new Error(firstError);
+      const firstError = passwordParsed.error.issues[0];
+      throw new Error(firstError.message);
     }
 
     const usedCreatedCredentials = await prisma.account.findFirst({
@@ -66,7 +66,6 @@ export async function registerService(data: RegisterData) {
     });
 
     // Crear el perfil asociado
-
     await prisma.profile.create({
       data: {
         userId: newUser.id,
@@ -83,6 +82,9 @@ export async function registerService(data: RegisterData) {
         providerAccountId: email,
       },
     });
+
+    // Solo devuelve un flag de éxito
+    return { success: true };
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message };

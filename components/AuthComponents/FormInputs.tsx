@@ -12,10 +12,11 @@ type FormInputsProps = {
   type?: string;
   placeholder?: string;
   name?: string;
-
+  value?: string;
   required?: boolean;
   disabled?: boolean;
   label?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // corregido
 };
 
 function FormInputs({
@@ -23,8 +24,9 @@ function FormInputs({
   type,
   placeholder,
   name = "",
-
+  value,
   required,
+  onChange, // corregido
 
   disabled,
   label,
@@ -77,8 +79,19 @@ function FormInputs({
           placeholder={placeholder}
           type={type === "password" && showPassword ? "text" : type}
           required={required}
+          value={value}
           disabled={disabled}
-          {...register(name)}
+          // Combina ambos handlers correctamente
+          {...(() => {
+            const field = register(name);
+            return {
+              ...field,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                field.onChange(e); // handler original de react-hook-form
+                onChange?.(e); // handler personalizado
+              },
+            };
+          })()}
           className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5"
         />
       </div>

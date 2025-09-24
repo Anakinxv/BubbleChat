@@ -21,8 +21,30 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        return null;
+      authorize: async (credentials) => {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("Invalid email or password");
+        }
+
+        const isValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+        if (!isValid) {
+          throw new Error("Invalid email or password");
+        }
+
+        // Devuelve el usuario sin la contraseña
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
       },
     }),
   ],

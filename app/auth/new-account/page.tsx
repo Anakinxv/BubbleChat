@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 import FormFormat from "@/components/AuthComponents/FormFormat";
-import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useAppStore } from "@/store/useAppStore";

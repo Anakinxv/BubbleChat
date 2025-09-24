@@ -5,6 +5,7 @@ import type {
   RegisterPasswordSchemaType,
 } from "@/types/Auth.types";
 
+import { registerService } from "@/app/actions/auth/register";
 export interface AuthStateInterface {
   user: {
     id: string;
@@ -31,6 +32,9 @@ export interface AuthStateInterface {
 
   setregisterStepOneData: (data: RegisterStepOneSchemaType) => void;
   setregisterPasswordData: (data: RegisterPasswordSchemaType) => void;
+  setregister: (
+    data: RegisterStepOneSchemaType & RegisterPasswordSchemaType
+  ) => Promise<void>;
 }
 
 export const createAuthSlice: StateCreator<AuthStateInterface> = (
@@ -67,5 +71,27 @@ export const createAuthSlice: StateCreator<AuthStateInterface> = (
   },
   setregisterPasswordData: (data) => {
     set({ registerPasswordData: data });
+  },
+
+  setregister: async (data) => {
+    set({ isloading: true, error: null });
+
+    try {
+      const response = await registerService(data);
+      console.log(response);
+
+      if (response.error) {
+        set({ error: response.error });
+      }
+      set({ isloading: false });
+    } catch (error) {
+      if (error instanceof Error) {
+        set({ error: error.message });
+      } else {
+        set({ error: "Ocurrió un error desconocido" });
+      }
+      set({ isloading: false });
+      console.error("Error en setregister:", error);
+    }
   },
 });

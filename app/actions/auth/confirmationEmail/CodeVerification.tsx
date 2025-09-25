@@ -16,10 +16,19 @@ export async function verifyEmailCode({
   });
 
   if (!user) {
+    console.log("Usuario no encontrado para el email:", email);
+
     return { success: false, error: "User not found." };
   }
 
+  console.log(email, code, type);
+
   if (type === "verification") {
+    console.log("Token recibido:", code);
+    console.log("Token en BD:", user.verificationToken);
+    console.log("Expira en:", user.verificationTokenExpiresAt);
+    console.log("Fecha actual:", new Date());
+
     if (
       user.verificationToken !== code ||
       !user.verificationTokenExpiresAt ||
@@ -37,6 +46,8 @@ export async function verifyEmailCode({
         verificationTokenExpiresAt: null,
       },
     });
+
+    console.log("Email verificado con éxito para:", email);
 
     return { success: true };
   }

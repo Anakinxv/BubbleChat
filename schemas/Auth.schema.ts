@@ -30,3 +30,10 @@ export const registerPasswordSchema = z
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   });
+
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .length(6, "El código debe tener 6 dígitos")
+    .regex(/^\d+$/, "El código debe contener solo números"),
+});

@@ -18,11 +18,11 @@ export async function sendAndSaveCode({
     type === "verification"
       ? {
           verificationToken: code,
-          verificationTokenExpiresAt: new Date(Date.now() + 15 * 60 * 1000),
+          verificationTokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hora
         }
       : {
           resetPasswordToken: code,
-          resetPasswordExpiresAt: new Date(Date.now() + 15 * 60 * 1000),
+          resetPasswordExpiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hora
         };
 
   // Guarda el código en el usuario

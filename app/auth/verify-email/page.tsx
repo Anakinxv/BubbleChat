@@ -8,7 +8,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import InputVerification from "@/components/AuthComponents/InputVerification";
-
+import { useAppStore } from "@/store/useAppStore";
+import { FormWrapper } from "@/components/Forms/FormWrapper";
+import { otpSchema } from "@/schemas/Auth.schema";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 function VerificarEmail() {
   useGSAP(() => {
     const masterTimeline = gsap.timeline({
@@ -49,21 +53,74 @@ function VerificarEmail() {
       ease: "power2.out",
     });
   });
+  const Router = useRouter();
+  const emailforverification = useAppStore(
+    (state) => state.registerStepOneData.email
+  );
+  const setReSendCode = useAppStore((state) => state.setReSendCode);
+
+  const setVerifyEmailCode = useAppStore((state) => state.setVerifyEmailCode);
+
+  const verifyEmailData = useAppStore((state) => state.verifyEmailData);
+  const error = useAppStore((state) => state.error);
+  const handleSubmit = async (data: { otp: string }) => {
+    try {
+      const dataEmail = {
+        email: emailforverification,
+        code: data.otp,
+      };
+      await setVerifyEmailCode(dataEmail);
+      Router.push("/auth/login");
+    } catch (error) {
+      console.error("Error verifying email:", error);
+    }
+  };
+
+  const handleReSendCode = async (data: {
+    email: string;
+    type: "verification" | "reset";
+  }) => {
+    try {
+      await setReSendCode(data);
+    } catch (error) {
+      console.error("Error resending code:", error);
+    }
+  };
 
   return (
     <FormFormat
       title="Verificar Email"
       description="Introdúcelo abajo para verificar"
-      email="allmyhomieshatelinkedin@gmail.com"
+      email={emailforverification}
     >
-      <InputVerification id="otp" />
-      <div>
-        <div id="login-button" className="mt-6">
-          <Link href={"/auth/recovered-password"}>
-            <Primarybutton id="next-button">Siguiente</Primarybutton>{" "}
-          </Link>
+      <FormWrapper
+        schema={otpSchema}
+        defaultValues={{ otp: verifyEmailData.code }}
+        onSubmit={handleSubmit}
+      >
+        <InputVerification id="otp" />{" "}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        <div className="w-full flex justify-center mt-4 mb-4">
+          <Button
+            className="theme-text-purple"
+            variant={"link"}
+            onClick={() => {
+              handleReSendCode({
+                email: emailforverification,
+                type: "verification",
+              });
+            }}
+          >
+            ¿No recibiste el correo electrónico?
+          </Button>
         </div>
-      </div>
+        {/* Mostrar error si existe */}
+        <div id="login-button" className="mt-6">
+          <Primarybutton type="submit" id="next-button">
+            Siguiente
+          </Primarybutton>
+        </div>
+      </FormWrapper>
     </FormFormat>
   );
 }

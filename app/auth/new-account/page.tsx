@@ -49,11 +49,7 @@ function NewAccountPage() {
   const Router = useRouter();
   const handleFirstStepSubmit = (data: RegisterStepOneSchemaType) => {
     setFirstStepData(data);
-    console.log(data);
-
-    if (!error) {
-      Router.push("/auth/create-password");
-    }
+    Router.push("/auth/create-password");
   };
 
   return (

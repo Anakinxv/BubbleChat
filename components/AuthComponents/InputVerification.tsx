@@ -39,16 +39,6 @@ function InputVerification({
 
   return (
     <div className="w-full flex flex-col mb-4">
-      <div className="flex justify-between items-center mb-1">
-        <Label
-          id={id}
-          className="mb-1 text-left text-lg text-[var(--theme-text)]"
-          htmlFor={id}
-        >
-          {label}
-        </Label>
-      </div>
-
       <div className="flex flex-col items-center">
         <InputOTP
           maxLength={maxLength}

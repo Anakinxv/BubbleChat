@@ -4,10 +4,10 @@ import type {
   RegisterStepOneSchemaType,
   RegisterPasswordSchemaType,
 } from "@/types/Auth.types";
-import { useRouter } from "next/router";
+import { sendAndSaveCode } from "@/app/actions/auth/confirmationEmail/sendAndSaveCode";
 
 import { registerService } from "@/app/actions/auth/register";
-
+import { verifyEmailCode } from "@/app/actions/auth/confirmationEmail/CodeVerification";
 export interface AuthStateInterface {
   user: {
     id: string;
@@ -34,9 +34,12 @@ export interface AuthStateInterface {
 
   setregisterStepOneData: (data: RegisterStepOneSchemaType) => void;
   setregisterPasswordData: (data: RegisterPasswordSchemaType) => void;
+
   setregister: (
     data: RegisterStepOneSchemaType & RegisterPasswordSchemaType
   ) => Promise<void>;
+
+  setVerifyEmailCode: (data: { email: string; code: string }) => Promise<void>;
 }
 
 export const createAuthSlice: StateCreator<
@@ -68,6 +71,7 @@ export const createAuthSlice: StateCreator<
 
     error: null,
     isloading: false,
+
     setregisterStepOneData: (data) => {
       set({
         registerStepOneData: data,
@@ -82,6 +86,51 @@ export const createAuthSlice: StateCreator<
 
       try {
         const response = await registerService(data);
+
+        if (response.success) {
+          try {
+            const response = await sendAndSaveCode({
+              email: data.email,
+              type: "verification",
+            });
+
+            if (response.error) {
+              set({ error: response.error });
+            }
+          } catch (error) {
+            if (error instanceof Error) {
+              set({ error: error.message });
+            } else {
+              set({ error: "Ocurrió un error desconocido" });
+            }
+            console.error("Error en sendAndSaveCode:", error);
+          }
+        }
+
+        if (response.error) {
+          set({ error: response.error });
+        }
+        set({ isloading: false });
+      } catch (error) {
+        if (error instanceof Error) {
+          set({ error: error.message });
+        } else {
+          set({ error: "Ocurrió un error desconocido" });
+        }
+        set({ isloading: false });
+        console.error("Error en setregister:", error);
+      }
+    },
+
+    setVerifyEmailCode: async (data) => {
+      set({ isloading: true, error: null });
+
+      try {
+        const response = await verifyEmailCode({
+          email: data.email,
+          code: data.code,
+          type: "verification",
+        });
 
         if (response.success) {
           set({
@@ -101,10 +150,11 @@ export const createAuthSlice: StateCreator<
           set({ error: "Ocurrió un error desconocido" });
         }
         set({ isloading: false });
-        console.error("Error en setregister:", error);
+        console.error("Error en setVerifyEmailCode:", error);
       }
     },
   }),
+
   {
     name: "auth-storage",
     storage: createJSONStorage(() => localStorage),

@@ -54,7 +54,7 @@ function CrearContraseña() {
 
         // Si no hay error, redirige
         if (!useAppStore.getState().error) {
-          Router.push("/auth/login");
+          Router.push("/auth/verify-email");
         }
       }
     } catch (error) {

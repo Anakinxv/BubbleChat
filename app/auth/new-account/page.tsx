@@ -11,6 +11,7 @@ import { FormWrapper } from "@/components/Forms/FormWrapper";
 import { registerStepOneSchema } from "@/schemas/Auth.schema";
 import { RegisterStepOneSchemaType } from "@/types/Auth.types";
 import { useRouter } from "next/navigation";
+import { useValidEmail } from "@/hooks/auth/useValidEmail";
 
 function NewAccountPage() {
   useGSAP(() => {

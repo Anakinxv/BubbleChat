@@ -21,6 +21,8 @@ function useValidEmail(email: string) {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1, // Retry once on failure
     retryDelay: 2000, // Wait 2 seconds before retrying
+    refetchOnMount: false,
+    refetchOnWindowFocus: true,
   });
 }
 

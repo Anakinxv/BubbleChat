@@ -1,13 +1,13 @@
 "use client";
 
-import api from "../axiosconfig";
+import { valideEmail } from "@/app/actions/auth/confirmationEmail/valideEmail";
 import { useQuery } from "@tanstack/react-query";
 
 async function isEmailValid(email: string): Promise<boolean> {
   try {
-    const response = await api.post("/auth/validemail", { email });
+    const response = await valideEmail(email);
 
-    return response.data.valid;
+    return response.valid;
   } catch (error) {
     return false;
   }

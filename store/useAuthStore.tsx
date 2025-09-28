@@ -21,6 +21,7 @@ export interface AuthStateInterface {
     emailVerified: boolean | null;
     bio: string | null;
   };
+
   isloading: boolean;
   error: string | null;
 
@@ -41,10 +42,7 @@ export interface AuthStateInterface {
 
   setregisterStepOneData: (data: RegisterStepOneSchemaType) => void;
   setregisterPasswordData: (data: RegisterPasswordSchemaType) => void;
-
-  setregister: (
-    data: RegisterStepOneSchemaType & RegisterPasswordSchemaType
-  ) => Promise<void>;
+  setverifyEmailData: (data: { email: string; code: string }) => void;
 
   setReSendCode: (data: {
     email: string;
@@ -94,7 +92,9 @@ export const createAuthSlice: StateCreator<
         email: "",
         code: "",
       },
-
+      setverifyEmailData: (data) => {
+        set({ verifyEmailData: data });
+      },
       setregisterStepOneData: (data) => {
         set({
           registerStepOneData: data,
@@ -102,50 +102,6 @@ export const createAuthSlice: StateCreator<
       },
       setregisterPasswordData: (data) => {
         set({ registerPasswordData: data });
-      },
-
-      setregister: async (data) => {
-        set({ isloading: true, error: null });
-        try {
-          const response = await registerService(data);
-          if (response.success) {
-            try {
-              const response = await sendAndSaveCode({
-                email: data.email,
-                type: "verification",
-              });
-              set({
-                verifyEmailData: { email: data.email, code: "" },
-              });
-              if (response.error) {
-                set({ error: response.error });
-                clearErrorAfterTimeout();
-              }
-            } catch (error) {
-              if (error instanceof Error) {
-                set({ error: error.message });
-              } else {
-                set({ error: "Ocurrió un error desconocido" });
-              }
-              clearErrorAfterTimeout();
-              console.error("Error en sendAndSaveCode:", error);
-            }
-          }
-          if (response.error) {
-            set({ error: response.error });
-            clearErrorAfterTimeout();
-          }
-          set({ isloading: false });
-        } catch (error) {
-          if (error instanceof Error) {
-            set({ error: error.message });
-          } else {
-            set({ error: "Ocurrió un error desconocido" });
-          }
-          set({ isloading: false });
-          clearErrorAfterTimeout();
-          console.error("Error en setregister:", error);
-        }
       },
 
       setVerifyEmailCode: async (data) => {

@@ -9,7 +9,7 @@ import {
   registerStepOneSchema,
 } from "@/schemas/Auth.schema";
 
-interface RegisterData {
+export interface RegisterInterface {
   name: string;
   lastName: string;
   email: string;
@@ -17,12 +17,10 @@ interface RegisterData {
   confirmPassword: string;
 }
 
-export async function registerService(data: RegisterData) {
+export async function registerService(data: RegisterInterface) {
   const { name, lastName, email, password } = data;
 
   try {
-    // Validaciones comentadas...
-
     const usedCreatedCredentials = await prisma.account.findFirst({
       where: { provider: "credentials", providerAccountId: email },
     });
@@ -77,7 +75,6 @@ export async function registerService(data: RegisterData) {
       });
     }
 
-    // Ligar cuenta en tabla accounts para next-auth solo si no existe
     const accountExist = await prisma.account.findFirst({
       where: { provider: "credentials", providerAccountId: email },
     });

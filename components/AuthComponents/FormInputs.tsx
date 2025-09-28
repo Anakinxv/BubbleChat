@@ -6,6 +6,7 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useFormContext } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 type FormInputsProps = {
   id?: string;
@@ -16,7 +17,9 @@ type FormInputsProps = {
   required?: boolean;
   disabled?: boolean;
   label?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // corregido
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  status?: "valid" | "invalid" | "pending";
+  statusMessage?: string;
 };
 
 function FormInputs({
@@ -26,8 +29,9 @@ function FormInputs({
   name = "",
   value,
   required,
-  onChange, // corregido
-
+  onChange,
+  status,
+  statusMessage,
   disabled,
   label,
 }: FormInputsProps) {
@@ -41,6 +45,19 @@ function FormInputs({
     register,
     formState: { errors },
   } = useFormContext();
+
+  const handleStatusColor = () => {
+    switch (status) {
+      case "valid":
+        return "border-green-500";
+      case "invalid":
+        return "border-red-500";
+      case "pending":
+        return "border-yellow-500";
+      default:
+        return "border-[var(--theme-border)]";
+    }
+  };
 
   return (
     <div className="w-full flex flex-col mb-4 px-0 sm:px-2">
@@ -81,25 +98,45 @@ function FormInputs({
           required={required}
           value={value}
           disabled={disabled}
-          // Combina ambos handlers correctamente
           {...(() => {
             const field = register(name);
             return {
               ...field,
               onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                field.onChange(e); // handler original de react-hook-form
-                onChange?.(e); // handler personalizado
+                field.onChange(e);
+                onChange?.(e);
               },
             };
           })()}
-          className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5"
+          className={cn(
+            "w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] h-12 sm:h-[60px] text-[var(--theme-text)] focus:ring-0 focus:border-[var(--theme-primary)] rounded-2xl sm:rounded-4xl px-3 sm:px-5",
+            handleStatusColor()
+          )}
         />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          {statusMessage && (
+            <span
+              className={cn(
+                "text-sm",
+                status === "valid"
+                  ? "text-green-500"
+                  : status === "invalid"
+                  ? "text-red-500"
+                  : status === "pending"
+                  ? "text-yellow-500"
+                  : "text-[var(--theme-textSecondary)]"
+              )}
+            >
+              {statusMessage}
+            </span>
+          )}
+        </div>
+        {errors[name] && (
+          <span className="text-red-500 text-sm mt-1">
+            {String(errors[name]?.message)}
+          </span>
+        )}
       </div>
-      {errors[name] && (
-        <span className="text-red-500 text-sm mt-1">
-          {String(errors[name]?.message)}
-        </span>
-      )}
     </div>
   );
 }

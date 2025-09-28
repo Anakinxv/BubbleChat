@@ -1,35 +1,22 @@
 "use client";
+import { useAppStore } from "@/store/useAppStore";
+import LoadingSpinner from "@/components/CommonComponents/LoadingSpinner";
+import { useEffect, useState } from "react";
 
-import { Poppins, Reenie_Beanie } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/CommonComponents/ThemeProvider";
-import QueryProvider from "@/QueryProvider";
-import SessionProvider from "@/app/SessionProvider";
+const ClientLayout = ({ children }: { children: React.ReactNode }) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const isLoading = useAppStore((state) => state.loading);
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-});
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-const reenie = Reenie_Beanie({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-reenie",
-});
+  if (!isMounted) return <>{children}</>;
+  if (isLoading) return <LoadingSpinner />;
 
-export default function ClientRootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <body className={`${poppins.variable} ${reenie.variable} antialiased`}>
-      <ThemeProvider>
-        <SessionProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </SessionProvider>
-      </ThemeProvider>
-    </body>
-  );
-}
+  return <>{children}</>;
+};
+
+ClientLayout.displayName = "ClientLayout";
+
+export default ClientLayout;

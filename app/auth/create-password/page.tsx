@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import FormFormat from "@/components/AuthComponents/FormFormat";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import FormInputs from "@/components/AuthComponents/FormInputs";
@@ -12,6 +12,8 @@ import { FormWrapper } from "@/components/Forms/FormWrapper";
 import { registerPasswordSchema } from "@/schemas/Auth.schema";
 import { RegisterPasswordSchemaType } from "@/types/Auth.types";
 import { useRouter } from "next/navigation";
+import { useRegister } from "@/hooks/auth/setRegister";
+import { useReSendCode } from "@/hooks/auth/setReSendCode";
 
 function CrearContraseña() {
   useGSAP(() => {
@@ -26,39 +28,98 @@ function CrearContraseña() {
     masterTimeline.from("#next-button", { opacity: 0, y: -20 });
   }, []);
 
-  const setPasswordData = useAppStore((state) => state.setregisterPasswordData);
+  // Estados del store
   const registerStepOneData = useAppStore((state) => state.registerStepOneData);
-  const setregister = useAppStore((state) => state.setregister);
-  const error = useAppStore((state) => state.error);
-  const isLoading = useAppStore((state) => state.isloading);
+  const setregisterStepOneData = useAppStore(
+    (state) => state.setregisterStepOneData
+  );
+  const setregisterPasswordData = useAppStore(
+    (state) => state.setregisterPasswordData
+  );
+  const setverifyEmailData = useAppStore((state) => state.setverifyEmailData);
+
+  // Estados globales para el spinner del layout
+  const setLoading = useAppStore((state) => state.setLoading);
+  const setError = useAppStore((state) => state.setError);
+
   const Router = useRouter();
+
+  // Estados de React Query
+  const {
+    mutateAsync: register,
+    isPending: isRegisterLoading,
+    error: registerError,
+  } = useRegister();
+
+  const {
+    mutateAsync: resendCode,
+    isPending: isResendLoading,
+    error: resendError,
+  } = useReSendCode();
+
+  // Sincronizar el loading global con los estados de React Query
+  useEffect(() => {
+    setLoading(isRegisterLoading || isResendLoading);
+  }, [isRegisterLoading, isResendLoading, setLoading]);
+
+  // Sincronizar errores globales
+  useEffect(() => {
+    const currentError = registerError || resendError;
+    if (currentError) {
+      const errorMessage =
+        currentError instanceof Error
+          ? currentError.message
+          : typeof currentError === "string"
+          ? currentError
+          : "Ocurrió un error durante el proceso";
+
+      setError(errorMessage);
+
+      // Limpiar error después de 5 segundos
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setError(null);
+    }
+  }, [registerError, resendError, setError]);
+
+  // Estados locales para el componente
+  const isLoading = isRegisterLoading || isResendLoading;
+  const currentError = registerError || resendError;
 
   const handleSecondStepSubmit = async (data: RegisterPasswordSchemaType) => {
     try {
-      setPasswordData(data);
+      const mergedData = {
+        ...registerStepOneData,
+        ...data,
+      };
 
-      if (registerStepOneData) {
-        const { name, lastName, email } = registerStepOneData;
-        const { password, confirmPassword } = data;
+      const responseRegister = await register(mergedData);
 
-        const mergeData = {
-          name,
-          lastName,
-          email,
-          password,
-          confirmPassword,
-        };
+      if (responseRegister?.success) {
+        try {
+          const responseResend = await resendCode({
+            email: registerStepOneData.email,
+            type: "verification",
+          });
 
-        await setregister(mergeData);
-        console.log(mergeData);
+          if (responseResend?.success) {
+            // Limpiar datos después del éxito
+            setregisterStepOneData({ name: "", lastName: "", email: "" });
+            setregisterPasswordData({ password: "", confirmPassword: "" });
+            setverifyEmailData({ email: registerStepOneData.email, code: "" });
 
-        // Si no hay error, redirige
-        if (!useAppStore.getState().error) {
-          Router.push("/auth/verify-email");
+            Router.push("/auth/verify-email");
+          }
+        } catch (error) {
+          console.error("Error al reenviar código:", error);
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error en el registro:", error);
     }
   };
 
@@ -72,9 +133,13 @@ function CrearContraseña() {
         defaultValues={{ password: "", confirmPassword: "" }}
         onSubmit={handleSecondStepSubmit}
       >
-        {error && (
+        {currentError && (
           <div className="mb-4 p-3 text-red-600 bg-red-50 border border-red-200 rounded">
-            {error}
+            {currentError instanceof Error
+              ? currentError.message
+              : typeof currentError === "string"
+              ? currentError
+              : "Ocurrió un error durante el proceso"}
           </div>
         )}
 
@@ -97,7 +162,11 @@ function CrearContraseña() {
         <div>
           <div id="next-button" className="mt-6">
             <Primarybutton disabled={isLoading}>
-              {isLoading ? "Registrando..." : "Siguiente"}
+              {isRegisterLoading
+                ? "Registrando..."
+                : isResendLoading
+                ? "Enviando código..."
+                : "Siguiente"}
             </Primarybutton>
           </div>
         </div>

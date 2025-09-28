@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { createAuthSlice, AuthStateInterface } from "./useAuthStore";
-
-export const useAppStore = create<AuthStateInterface>((...a) => ({
-  ...createAuthSlice(...a),
-}));
+import { createUIGlobalSlice, UIGlobalState } from "./useUIGlobalStore";
+export const useAppStore = create<AuthStateInterface & UIGlobalState>(
+  (...a) => ({
+    ...createAuthSlice(...a),
+    ...createUIGlobalSlice(...a),
+  })
+);

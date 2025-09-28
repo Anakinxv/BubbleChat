@@ -1,5 +1,24 @@
 import type { Metadata } from "next";
-import ClientRootLayout from "./ClientLayout";
+import { Poppins, Reenie_Beanie } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/CommonComponents/ThemeProvider";
+import QueryProvider from "@/QueryProvider";
+import SessionProvider from "@/app/SessionProvider";
+import ClientLayout from "./ClientLayout";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const reenie = Reenie_Beanie({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-reenie",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +32,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <ClientRootLayout>{children}</ClientRootLayout>
+      <body
+        className={`${poppins.variable} ${reenie.variable} antialiased`}
+        suppressHydrationWarning
+      >
+        <ThemeProvider>
+          <SessionProvider>
+            <QueryProvider>
+              <ClientLayout>{children}</ClientLayout>
+            </QueryProvider>
+          </SessionProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

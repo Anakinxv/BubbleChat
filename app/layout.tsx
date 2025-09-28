@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/CommonComponents/ThemeProvider";
 import QueryProvider from "@/QueryProvider";
 import SessionProvider from "@/app/SessionProvider";
-import ClientLayout from "./ClientLayout";
+import GlobalSpinner from "@/components/CommonComponents/GlobalSpinner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,7 +39,8 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider>
             <QueryProvider>
-              <ClientLayout>{children}</ClientLayout>
+              {children}
+              <GlobalSpinner />
             </QueryProvider>
           </SessionProvider>
         </ThemeProvider>

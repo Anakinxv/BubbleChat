@@ -4,11 +4,6 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import generateUniqueUsername from "@/lib/generateUniqueUsername";
 
-import {
-  registerPasswordSchema,
-  registerStepOneSchema,
-} from "@/schemas/Auth.schema";
-
 export interface RegisterInterface {
   name: string;
   lastName: string;

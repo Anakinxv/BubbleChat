@@ -36,16 +36,19 @@ export function useRegisterFlow() {
   });
 
   const {
-    mutateAsync: resendCode,
-    isPending: isResendLoading,
-    error: resendError,
-    reset: resetResendCode,
+    handleReSendCode,
+    isLoading: isResendLoading,
+    currentError: resendError,
+    resetResendCode,
   } = useReSendCode();
 
   const isLoading = isRegisterLoading || isResendLoading;
   const currentError = registerError || resendError;
 
-  const handleSecondStepSubmit = async (data: any) => {
+  const handleSecondStepSubmit = async (data: {
+    password: string;
+    confirmPassword: string;
+  }) => {
     try {
       // Limpieza de errores previos
       resetRegister();
@@ -56,17 +59,16 @@ export function useRegisterFlow() {
       // Paso 1: Unir datos y registrar usuario
       const mergedData = { ...registerStepOneData, ...data };
       await register(mergedData);
-
       // Paso 2: Enviar código de verificación
-      await resendCode({
+      await handleReSendCode({
         email: registerStepOneData.email,
         type: "verification",
       });
 
       // Paso 3: Limpieza y redirección
+      setverifyEmailData({ email: registerStepOneData.email, code: "" });
       setregisterStepOneData({ name: "", lastName: "", email: "" });
       setregisterPasswordData({ password: "", confirmPassword: "" });
-      setverifyEmailData({ email: registerStepOneData.email, code: "" });
 
       setLoading(false);
       router.push("/auth/verify-email");

@@ -12,6 +12,8 @@ import { registerStepOneSchema } from "@/schemas/Auth.schema";
 import { RegisterStepOneSchemaType } from "@/types/Auth.types";
 import { useRouter } from "next/navigation";
 import { useValidEmail } from "@/hooks/auth/useValidEmail";
+import { useGlobalError } from "@/hooks/ui/useGlobalError";
+import { useGlobalLoading } from "@/hooks/ui/useGlobalLoading";
 
 function NewAccountPage() {
   useGSAP(() => {
@@ -46,7 +48,9 @@ function NewAccountPage() {
 
   const setFirstStepData = useAppStore((state) => state.setregisterStepOneData);
   const registerStepOneData = useAppStore((state) => state.registerStepOneData);
-  const error = useAppStore((state) => state.error);
+  const email = useAppStore((state) => state.registerStepOneData.email);
+  const { validationResult, isValidateEmailLoading, validateEmailError } =
+    useValidEmail(email);
   const Router = useRouter();
   const handleFirstStepSubmit = (data: RegisterStepOneSchemaType) => {
     setFirstStepData(data);
@@ -86,6 +90,12 @@ function NewAccountPage() {
           label="Email"
           placeholder="Ingresa tu email"
           type="email"
+          onChange={(e) => {
+            setFirstStepData({
+              ...registerStepOneData,
+              email: e.target.value,
+            });
+          }}
         />
         <div id="create-account" className="mt-6">
           <Primarybutton>Siguiente</Primarybutton>

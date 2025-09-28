@@ -12,16 +12,16 @@ import { useFormContext, Controller } from "react-hook-form";
 
 type InputVerificationProps = {
   id?: string;
-
   maxLength?: number;
   disabled?: boolean;
+  onChange?: (value: string) => void; // <--- Añade esto
 };
 
 function InputVerification({
   id = "otp",
-
   maxLength = 6,
   disabled,
+  onChange, // <--- Añade esto
 }: InputVerificationProps) {
   const {
     control,
@@ -37,7 +37,10 @@ function InputVerification({
           render={({ field }) => (
             <InputOTP
               value={field.value || ""}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                if (onChange) onChange(value); // <--- Llama al setter global
+              }}
               maxLength={maxLength}
               disabled={disabled}
             >

@@ -1,29 +1,35 @@
 "use client";
 
 import { valideEmail } from "@/app/actions/auth/confirmationEmail/valideEmail";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
+import React from "react";
+export function useValidEmail(email: string) {
+  const debouncedEmail = useDebounce(email, 300);
 
-async function isEmailValid(email: string): Promise<boolean> {
-  try {
-    const response = await valideEmail(email);
-
-    return response.valid;
-  } catch (error) {
-    return false;
-  }
-}
-
-function useValidEmail(email: string) {
-  return useQuery({
-    queryKey: ["validEmail", email],
-    queryFn: () => isEmailValid(email),
-    enabled: !!email,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1, // Retry once on failure
-    retryDelay: 2000, // Wait 2 seconds before retrying
-    refetchOnMount: false,
-    refetchOnWindowFocus: true,
+  const {
+    mutate: validateEmail,
+    data: validationResult,
+    isPending: isValidateEmailLoading,
+    error: validateEmailError,
+    reset: resetValidateEmail,
+  } = useMutation({
+    mutationFn: async (email: string) => {
+      return await valideEmail(email);
+    },
   });
-}
 
-export { useValidEmail };
+  // Efecto para validar automáticamente cuando el email debounced cambie
+  React.useEffect(() => {
+    if (debouncedEmail) {
+      validateEmail(debouncedEmail);
+    }
+  }, [debouncedEmail, validateEmail]);
+
+  return {
+    validationResult,
+    isValidateEmailLoading,
+    validateEmailError,
+    resetValidateEmail,
+  };
+}

@@ -13,6 +13,9 @@ import { useAppStore } from "@/store/useAppStore";
 
 function CrearContraseña() {
   const { registerPasswordData } = useAppStore();
+  const setRegisterPasswordData = useAppStore(
+    (state) => state.setregisterPasswordData
+  );
   const {
     isLoading,
     currentError,
@@ -54,6 +57,12 @@ function CrearContraseña() {
           placeholder="Ingresa tu contraseña"
           type="password"
           required
+          onChange={(e) =>
+            setRegisterPasswordData({
+              ...registerPasswordData,
+              password: e.target.value,
+            })
+          }
         />
         <FormInputs
           id="repeat-password"
@@ -62,6 +71,12 @@ function CrearContraseña() {
           type="password"
           required
           name="confirmPassword"
+          onChange={(e) =>
+            setRegisterPasswordData({
+              ...registerPasswordData,
+              confirmPassword: e.target.value,
+            })
+          }
         />
         <div className="mt-6">
           <Primarybutton disabled={isLoading}>

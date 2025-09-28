@@ -12,7 +12,13 @@ import { useAppStore } from "@/store/useAppStore";
 import { FormWrapper } from "@/components/Forms/FormWrapper";
 import { otpSchema } from "@/schemas/Auth.schema";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+
+import { useVerifyEmailCode } from "@/hooks/auth/setVerifyEmailCode";
+import { useReSendCode } from "@/hooks/auth/setReSendCode";
+import { useGlobalError } from "@/hooks/ui/useGlobalError";
+import { useGlobalLoading } from "@/hooks/ui/useGlobalLoading";
+import { da } from "zod/v4/locales";
+
 function VerificarEmail() {
   useGSAP(() => {
     const masterTimeline = gsap.timeline({
@@ -53,39 +59,26 @@ function VerificarEmail() {
       ease: "power2.out",
     });
   });
-  const Router = useRouter();
+
   const emailforverification = useAppStore(
-    (state) => state.registerStepOneData.email
+    (state) => state.verifyEmailData.email
   );
-  const setReSendCode = useAppStore((state) => state.setReSendCode);
-
-  const setVerifyEmailCode = useAppStore((state) => state.setVerifyEmailCode);
-
   const verifyEmailData = useAppStore((state) => state.verifyEmailData);
-  const error = useAppStore((state) => state.error);
-  const handleSubmit = async (data: { otp: string }) => {
-    try {
-      const dataEmail = {
-        email: emailforverification,
-        code: data.otp,
-      };
-      await setVerifyEmailCode(dataEmail);
-      Router.push("/auth/login");
-    } catch (error) {
-      console.error("Error verifying email:", error);
-    }
-  };
 
-  const handleReSendCode = async (data: {
-    email: string;
-    type: "verification" | "reset";
-  }) => {
-    try {
-      await setReSendCode(data);
-    } catch (error) {
-      console.error("Error resending code:", error);
-    }
-  };
+  const errorGlobal = useAppStore((state) => state.error);
+
+  const { handleVerifyCode, isLoading, currentError, resetVerifyCode } =
+    useVerifyEmailCode();
+
+  const {
+    handleReSendCode,
+    isLoading: isResendLoading,
+    currentError: resendError,
+    resetResendCode,
+  } = useReSendCode();
+
+  useGlobalLoading(isLoading || isResendLoading);
+  useGlobalError([currentError, resendError], []);
 
   return (
     <FormFormat
@@ -96,10 +89,14 @@ function VerificarEmail() {
       <FormWrapper
         schema={otpSchema}
         defaultValues={{ otp: verifyEmailData.code }}
-        onSubmit={handleSubmit}
+        onSubmit={(data) => {
+          handleVerifyCode(data);
+        }}
       >
         <InputVerification id="otp" />{" "}
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {errorGlobal && (
+          <p className="text-red-500 text-sm mt-2">{errorGlobal}</p>
+        )}
         <div className="w-full flex justify-center mt-4 mb-4">
           <Button
             className="theme-text-purple"

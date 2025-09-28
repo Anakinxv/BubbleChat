@@ -75,9 +75,3 @@ export async function verifyEmailCode({
 
   return { success: false, error: "Invalid verification type." };
 }
-
-function CodeVerification() {
-  return <div>CodeVerification</div>;
-}
-
-export default CodeVerification;

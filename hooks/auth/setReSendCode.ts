@@ -6,27 +6,37 @@ interface SendAndSaveCodeParams {
   type: "verification" | "reset";
 }
 
-export async function resendCode(data: SendAndSaveCodeParams) {
-  try {
-    const response = await sendAndSaveCode(data);
-    if (response.success) {
-      return { success: true, code: response.code };
-    } else {
-      return { error: response.error || "Error desconocido" };
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error al reenviar código:", error.message);
-      return { error: error.message };
-    } else {
-      console.error("Error al reenviar código:", error);
-      return { error: "Ocurrió un error desconocido" };
-    }
-  }
-}
-
 export function useReSendCode() {
-  return useMutation({
-    mutationFn: resendCode,
+  const {
+    mutateAsync: resendCode,
+    isPending: isResendLoading,
+    error: resendError,
+    reset: resetResendCode,
+  } = useMutation({
+    mutationFn: async (data: SendAndSaveCodeParams) => {
+      const response = await sendAndSaveCode(data);
+      if (!response.success) {
+        throw new Error(
+          response.error || "Error desconocido durante el reenvío del código"
+        );
+      }
+      return response;
+    },
   });
+
+  const isLoading = isResendLoading;
+  const currentError = resendError;
+
+  const handleReSendCode = async (data: SendAndSaveCodeParams) => {
+    try {
+      resetResendCode();
+      const result = await resendCode(data);
+      return result;
+    } catch (error) {
+      console.error("Error en handleReSendCode:", error);
+      throw error; // Re-lanzar el error para que pueda ser manejado por el llamador
+    }
+  };
+
+  return { handleReSendCode, isLoading, currentError, resetResendCode };
 }

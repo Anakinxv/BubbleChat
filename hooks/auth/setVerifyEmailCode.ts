@@ -2,12 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { verifyEmailCode } from "@/app/actions/auth/confirmationEmail/CodeVerification";
 import { useAppStore } from "@/store/useAppStore";
 import { useRouter } from "next/navigation";
-import { verify } from "crypto";
+import { useGlobalError } from "../ui/useGlobalError";
 
 export function useVerifyEmailCode() {
   const router = useRouter();
   const verifyEmailData = useAppStore((state) => state.verifyEmailData);
   const setverifyEmailData = useAppStore((state) => state.setverifyEmailData);
+  const setGlobalError = useAppStore((state) => state.setError); // <-- agrega esto
+
   const {
     mutateAsync: verifyCode,
     isPending: isVerifyCodeLoading,
@@ -33,28 +35,27 @@ export function useVerifyEmailCode() {
   const currentError = verifyCodeError;
 
   const handleVerifyCode = async (data: { otp: string }) => {
+    setGlobalError(""); // Limpia el error global antes de intentar
+
     if (!verifyEmailData.email) {
-      // Aquí podrías usar tu sistema global de errores
-
-      console.log(verifyEmailData);
-
-      console.error("Email is missing");
+      setGlobalError("El email es obligatorio.");
       return;
     }
 
     if (!data.otp) {
-      console.error("Code is missing");
+      setGlobalError("El código es obligatorio.");
       return;
     }
     try {
       await verifyCode({
         email: verifyEmailData.email,
-        code: data.otp, // Usar data.otp en lugar de verifyEmailData.code
+        code: data.otp,
         type: "verification",
       });
       router.push("/auth/login");
       setverifyEmailData({ email: "", code: "" });
-    } catch (error) {
+    } catch (error: any) {
+      setGlobalError(error.message || "Error verificando el código.");
       console.error("Error verifying email code:", error);
     }
   };

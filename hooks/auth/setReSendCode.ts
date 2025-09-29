@@ -29,6 +29,9 @@ export function useReSendCode() {
 
   const handleReSendCode = async (data: SendAndSaveCodeParams) => {
     try {
+      if (!data.email) {
+        throw new Error("El correo electrónico es obligatorio");
+      }
       resetResendCode();
       const result = await resendCode(data);
       return result;

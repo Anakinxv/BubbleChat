@@ -19,15 +19,6 @@ export async function valideEmail(email: string) {
       redirect("/too-fast");
     }
 
-    console.log("Verifying email:", email);
-
-    if (!email || typeof email !== "string") {
-      return {
-        valid: false,
-        message: "Email inválido.",
-      };
-    }
-
     const user = await prisma.user.findUnique({
       where: { email },
       select: { email: true },

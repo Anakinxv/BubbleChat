@@ -17,7 +17,6 @@ import { useVerifyEmailCode } from "@/hooks/auth/setVerifyEmailCode";
 import { useReSendCode } from "@/hooks/auth/setReSendCode";
 import { useGlobalError } from "@/hooks/ui/useGlobalError";
 import { useGlobalLoading } from "@/hooks/ui/useGlobalLoading";
-import { da } from "zod/v4/locales";
 
 function VerificarEmail() {
   useGSAP(() => {
@@ -107,6 +106,7 @@ function VerificarEmail() {
                 type: "verification",
               });
             }}
+            disabled={!verifyEmailData.email}
           >
             ¿No recibiste el correo electrónico?
           </Button>

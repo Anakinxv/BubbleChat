@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 import FormFormat from "@/components/AuthComponents/FormFormat";
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useValidEmail } from "@/hooks/auth/useValidEmail";
 import { useGlobalError } from "@/hooks/ui/useGlobalError";
 import { useGlobalLoading } from "@/hooks/ui/useGlobalLoading";
+import { useDebounce } from "@uidotdev/usehooks";
 
 function NewAccountPage() {
   useGSAP(() => {
@@ -49,12 +50,53 @@ function NewAccountPage() {
   const setFirstStepData = useAppStore((state) => state.setregisterStepOneData);
   const registerStepOneData = useAppStore((state) => state.registerStepOneData);
   const email = useAppStore((state) => state.registerStepOneData.email);
-  const { validationResult, isValidateEmailLoading, validateEmailError } =
-    useValidEmail(email);
+
+  // Debounce the email to avoid too many requests
+  const debouncedEmail = useDebounce(email, 500);
+
+  const emailValidationMutation = useValidEmail(debouncedEmail);
+
   const Router = useRouter();
+
+  // Trigger email validation when debounced email changes
+  useEffect(() => {
+    if (debouncedEmail && debouncedEmail.includes("@")) {
+      emailValidationMutation.mutate(debouncedEmail);
+    }
+  }, [debouncedEmail]);
+
   const handleFirstStepSubmit = (data: RegisterStepOneSchemaType) => {
     setFirstStepData(data);
-    Router.push("/auth/create-password");
+
+    if (emailValidationMutation.data?.valid === true) {
+      Router.push("/auth/create-password");
+    }
+  };
+
+  const handleStatus = () => {
+    if (emailValidationMutation.isPending) {
+      return "pending"; // Loading
+    }
+    if (emailValidationMutation.data?.valid === false) {
+      return "invalid"; // Email exists
+    }
+    if (emailValidationMutation.data?.valid === true) {
+      return "valid"; // Email does not exist
+    }
+    return undefined;
+  };
+
+  const getStatusMessage = () => {
+    if (emailValidationMutation.isPending) {
+      return "Verificando...";
+    }
+    if (emailValidationMutation.data?.message) {
+      return emailValidationMutation.data.message;
+    }
+    if (emailValidationMutation.error) {
+      return "Error al verificar el email";
+    }
+    return "";
   };
 
   return (
@@ -96,10 +138,16 @@ function NewAccountPage() {
               email: e.target.value,
             });
           }}
+          {...(debouncedEmail && debouncedEmail.includes("@")
+            ? {
+                status: handleStatus(),
+                statusMessage: getStatusMessage(),
+              }
+            : {})}
         />
         <div id="create-account" className="mt-6">
           <Primarybutton>Siguiente</Primarybutton>
-        </div>{" "}
+        </div>
       </FormWrapper>
     </FormFormat>
   );

@@ -113,30 +113,29 @@ function FormInputs({
             handleStatusColor()
           )}
         />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-          {statusMessage && (
-            <span
-              className={cn(
-                "text-sm",
-                status === "valid"
-                  ? "text-green-500"
-                  : status === "invalid"
-                  ? "text-red-500"
-                  : status === "pending"
-                  ? "text-yellow-500"
-                  : "text-[var(--theme-textSecondary)]"
-              )}
-            >
-              {statusMessage}
-            </span>
-          )}
-        </div>
-        {errors[name] && (
-          <span className="text-red-500 text-sm mt-1">
-            {String(errors[name]?.message)}
-          </span>
-        )}
       </div>
+      {/* Status message BELOW the input */}
+      {statusMessage && (
+        <span
+          className={cn(
+            "text-sm mt-1 block",
+            status === "valid"
+              ? "text-green-500"
+              : status === "invalid"
+              ? "text-red-500"
+              : status === "pending"
+              ? "text-yellow-500"
+              : "text-[var(--theme-textSecondary)]"
+          )}
+        >
+          {statusMessage}
+        </span>
+      )}
+      {errors[name] && (
+        <span className="text-red-500 text-sm mt-1">
+          {String(errors[name]?.message)}
+        </span>
+      )}
     </div>
   );
 }

@@ -59,6 +59,7 @@ export function useRegisterFlow() {
       // Paso 1: Unir datos y registrar usuario
       const mergedData = { ...registerStepOneData, ...data };
       await register(mergedData);
+
       // Paso 2: Enviar código de verificación
       await handleReSendCode({
         email: registerStepOneData.email,
@@ -73,8 +74,8 @@ export function useRegisterFlow() {
       setLoading(false);
       router.push("/auth/verify-email");
     } catch (err: any) {
-      console.error("Error en el flujo de registro:", err);
-      setError(err.message || "Error durante el registro");
+      // Usa el error global siempre
+      setError(err?.message || "Error durante el registro");
       setLoading(false);
     }
   };

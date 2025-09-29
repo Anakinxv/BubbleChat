@@ -3,12 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type {
   RegisterStepOneSchemaType,
   RegisterPasswordSchemaType,
-  OtpSchemaType,
 } from "@/types/Auth.types";
-import { sendAndSaveCode } from "@/app/actions/auth/confirmationEmail/sendAndSaveCode";
-
-import { registerService } from "@/app/actions/auth/register";
-import { verifyEmailCode } from "@/app/actions/auth/confirmationEmail/CodeVerification";
 
 export interface AuthStateInterface {
   user: {
@@ -43,13 +38,8 @@ export interface AuthStateInterface {
   setregisterStepOneData: (data: RegisterStepOneSchemaType) => void;
   setregisterPasswordData: (data: RegisterPasswordSchemaType) => void;
   setverifyEmailData: (data: { email: string; code: string }) => void;
-
-  setReSendCode: (data: {
-    email: string;
-    type: "verification" | "reset";
-  }) => Promise<void>;
-
-  setVerifyEmailCode: (data: { email: string; code: string }) => Promise<void>;
+  setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const createAuthSlice: StateCreator<
@@ -58,7 +48,7 @@ export const createAuthSlice: StateCreator<
   [["zustand/persist", unknown]]
 > = persist(
   (set, get) => {
-    // Mueve la función fuera del objeto de estado
+    // Limpia el error después de 10 segundos
     const clearErrorAfterTimeout = () => {
       setTimeout(() => set({ error: null }), 10000);
     };
@@ -92,77 +82,25 @@ export const createAuthSlice: StateCreator<
         email: "",
         code: "",
       },
+
       setverifyEmailData: (data) => {
         set({ verifyEmailData: data });
       },
       setregisterStepOneData: (data) => {
-        set({
-          registerStepOneData: data,
-        });
+        set({ registerStepOneData: data });
       },
       setregisterPasswordData: (data) => {
         set({ registerPasswordData: data });
       },
-
-      setVerifyEmailCode: async (data) => {
-        set({ isloading: true, error: null });
-        console.log(data);
-        try {
-          const response = await verifyEmailCode({
-            email: data.email,
-            code: data.code,
-            type: "verification",
-          });
-          if (response.success) {
-            set({
-              registerStepOneData: { name: "", lastName: "", email: "" },
-              registerPasswordData: { password: "", confirmPassword: "" },
-            });
-            set({ verifyEmailData: { email: "", code: "" } });
-          }
-          if (response.error) {
-            set({ error: response.error });
-            clearErrorAfterTimeout();
-          }
-          set({ isloading: false });
-        } catch (error) {
-          if (error instanceof Error) {
-            set({ error: error.message });
-          } else {
-            set({ error: "Ocurrió un error desconocido" });
-          }
-          set({ isloading: false });
-          clearErrorAfterTimeout();
-          console.error("Error en setVerifyEmailCode:", error);
-        }
+      setError: (error) => {
+        set({ error });
+        if (error) clearErrorAfterTimeout();
       },
-
-      setReSendCode: async (data) => {
-        set({ isloading: true, error: null });
-        try {
-          const response = await sendAndSaveCode({
-            email: data.email,
-            type: data.type,
-          });
-          if (response.error) {
-            set({ error: response.error });
-            clearErrorAfterTimeout();
-          }
-          set({ isloading: false });
-        } catch (error) {
-          if (error instanceof Error) {
-            set({ error: error.message });
-          } else {
-            set({ error: "Ocurrió un error desconocido" });
-          }
-          set({ isloading: false });
-          clearErrorAfterTimeout();
-          console.error("Error en setReSendCode:", error);
-        }
+      setLoading: (loading) => {
+        set({ isloading: loading });
       },
     };
   },
-
   {
     name: "auth-storage",
     storage: createJSONStorage(() => sessionStorage),

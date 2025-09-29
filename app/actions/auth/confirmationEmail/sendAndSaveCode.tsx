@@ -10,6 +10,12 @@ export async function sendAndSaveCode({
   email: string;
   type: "verification" | "reset";
 }) {
+  // Verifica si el usuario existe antes de continuar
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return { success: false, error: "No existe un usuario con ese email." };
+  }
+
   // Genera un código aleatorio de 6 dígitos
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 

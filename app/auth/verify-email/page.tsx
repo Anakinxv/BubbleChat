@@ -98,6 +98,7 @@ function VerificarEmail() {
         )}
         <div className="w-full flex justify-center mt-4 mb-4">
           <Button
+            type="button" // <-- Esto evita el submit y la validación
             className="theme-text-purple"
             variant={"link"}
             onClick={() => {
@@ -113,7 +114,11 @@ function VerificarEmail() {
         </div>
         {/* Mostrar error si existe */}
         <div id="login-button" className="mt-6">
-          <Primarybutton type="submit" id="next-button">
+          <Primarybutton
+            type="submit"
+            id="next-button"
+            disabled={!verifyEmailData.email}
+          >
             Siguiente
           </Primarybutton>
         </div>

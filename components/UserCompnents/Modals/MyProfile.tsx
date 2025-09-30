@@ -3,36 +3,51 @@
 import React from "react";
 import BaseModal from "./BaseModal";
 
+type UserWithProfile = {
+  id: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+  createdAt: Date;
+  profile: {
+    username: string;
+    displayName: string | null;
+    bio: string | null;
+    avatarUrl: string | null;
+  } | null;
+};
+
 type MyProfileProps = {
   title: string;
   isOpen: boolean;
   onClose: () => void;
-  avatar?: string;
-  username?: string;
-  bio?: string;
-  email?: string;
-  joinedAt?: string;
-  name?: string;
+  userInfo?: UserWithProfile | null;
 };
 
-function MyProfile({
-  title,
-  name = "GardenUser",
-  isOpen,
-  onClose,
-  avatar = "https://i.pravatar.cc/80?img=3",
-  username = "gardenuser",
-  bio = "UI designer & plant lover 🌱",
-  email = "gardenuser@email.com",
-  joinedAt = "Joined: Jan 2024",
-}: MyProfileProps) {
+function MyProfile({ title, isOpen, onClose, userInfo }: MyProfileProps) {
+  // Valores por defecto si no hay userInfo
+  const name = userInfo?.name || userInfo?.profile?.displayName || "Usuario";
+  const username = userInfo?.profile?.username || "usuario";
+  const bio = userInfo?.profile?.bio || "Sin biografía";
+  const email = userInfo?.email || "Sin email";
+  const avatar =
+    userInfo?.profile?.avatarUrl ||
+    userInfo?.image ||
+    "https://i.pravatar.cc/80?img=3";
+  const joinedAt = userInfo?.createdAt
+    ? `Joined: ${new Date(userInfo.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      })}`
+    : "Joined: Unknown";
+
   return (
     <BaseModal title={title} isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center gap-2 p-4 theme-bg-surface rounded-2xl  max-w-md mx-auto">
+      <div className="flex flex-col items-center gap-2 p-4 theme-bg-surface rounded-2xl max-w-md mx-auto">
         <img
           src={avatar}
           alt={username}
-          className="w-35 h-35 rounded-full mb-2 "
+          className="w-35 h-35 rounded-full mb-2"
         />
         <div className="flex flex-col justify-center items-center text-center">
           <h2 className="font-bold text-2xl theme-text-primary">{name}</h2>

@@ -20,6 +20,11 @@ export interface AuthStateInterface {
   isloading: boolean;
   error: string | null;
 
+  loginData: {
+    email: string;
+    password: string;
+  };
+
   registerStepOneData: {
     name: string;
     lastName: string;
@@ -63,6 +68,10 @@ export const createAuthSlice: StateCreator<
         email: "",
         emailVerified: null,
         bio: null,
+      },
+      loginData: {
+        email: "",
+        password: "",
       },
 
       registerStepOneData: {

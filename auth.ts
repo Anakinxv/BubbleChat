@@ -12,18 +12,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
-    GitHub, // detecta AUTH_GITHUB_ID y AUTH_GITHUB_SECRET
-    Google, // detecta AUTH_GOOGLE_ID y AUTH_GOOGLE_SECRET
-    Facebook, // detecta AUTH_FACEBOOK_ID y AUTH_FACEBOOK_SECRET
+    GitHub,
+    Google,
+    Facebook,
     Credentials({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: "Correo electrónico", type: "email" },
+        password: { label: "Contraseña", type: "password" },
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
+          throw new Error("Correo electrónico y contraseña son obligatorios");
         }
 
         const user = await prisma.user.findUnique({
@@ -31,7 +31,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         });
 
         if (!user || !user.password) {
-          throw new Error("Invalid email or password");
+          throw new Error("Correo o contraseña inválidos");
         }
 
         const isValid = await bcrypt.compare(
@@ -39,7 +39,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           user.password
         );
         if (!isValid) {
-          throw new Error("Invalid email or password");
+          throw new Error("Correo o contraseña inválidos");
         }
 
         // Devuelve el usuario sin la contraseña
@@ -55,6 +55,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async redirect({ url, baseUrl }) {
       // Redirige siempre al dashboard después de login
       return `${baseUrl}/app/home`;
+    },
+    async jwt({ token, user }) {
+      // Solo la primera vez que el usuario inicia sesión
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id as string;
+      return session;
     },
 
     async signIn({ user, account, profile }) {

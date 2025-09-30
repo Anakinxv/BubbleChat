@@ -94,6 +94,11 @@ model User {
   image           String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  role            String    @default("USER")
+  isBanned        Boolean   @default(false)
+  banReason       String?
+  banExpiresAt    DateTime?
+  lastLoginAt     DateTime?
 
   // Tokens para recuperación y verificación
   resetPasswordToken        String?

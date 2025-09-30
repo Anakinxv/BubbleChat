@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useState } from "react";
 import FormInputs from "@/components/AuthComponents/FormInputs";
 import FormFormat from "@/components/AuthComponents/FormFormat";
 import AuthBubbles from "@/components/AuthComponents/AuthBubbles";
@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { loginSchema } from "@/schemas/Auth.schema";
 import { FormWrapper } from "@/components/Forms/FormWrapper";
 import type { LoginSchemaType } from "@/types/Auth.types";
+import { useAppStore } from "@/store/useAppStore";
+import { useGlobalError } from "@/hooks/ui/useGlobalError";
+import { loginWithCredentials } from "@/app/actions/auth/auth-actions";
 
 function Page() {
   useGSAP(() => {
@@ -34,10 +37,37 @@ function Page() {
     });
   }, []);
 
-  const handleLoginSubmit = async (values: LoginSchemaType) => {
-    console.log("Formulario válido:", values);
-    // Aquí puedes hacer fetch a tu API / NextAuth
-  };
+  const error = useAppStore((state) => state.error);
+  const setLoading = useAppStore((state) => state.setLoading);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  useGlobalError([submitError], [() => setSubmitError(null)]);
+
+  const handleLoginSubmit = useCallback(
+    async (values: LoginSchemaType) => {
+      setLoading(true);
+      try {
+        const result = await loginWithCredentials(
+          values.email,
+          values.password
+        );
+
+        if (!result.success) {
+          setLoading(false);
+          setSubmitError(result.error || "Error de autenticación");
+        } else {
+          setLoading(false);
+          window.location.href = "/app/home";
+        }
+      } catch (error) {
+        setLoading(false);
+        setSubmitError(
+          error instanceof Error ? error.message : "Error desconocido"
+        );
+      }
+    },
+    [setLoading]
+  );
 
   return (
     <FormFormat title="Inicia sesión en" accent="BubbleChat!">
@@ -46,6 +76,11 @@ function Page() {
         defaultValues={{ email: "", password: "" }}
         onSubmit={handleLoginSubmit}
       >
+        {error && (
+          <div className="mb-4 p-3 text-red-600 bg-red-50 border border-red-200 rounded">
+            {error}
+          </div>
+        )}
         <FormInputs
           id="email"
           label="Email"
@@ -64,7 +99,11 @@ function Page() {
           />
           <div className="flex justify-end mt-2">
             <Link href={"/auth/recover-password"}>
-              <Button className="theme-text-purple" variant={"link"}>
+              <Button
+                type="button"
+                className="theme-text-purple"
+                variant={"link"}
+              >
                 Olvidaste tu contraseña?
               </Button>
             </Link>

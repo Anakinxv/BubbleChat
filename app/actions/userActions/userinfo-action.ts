@@ -21,28 +21,33 @@ export async function getUserInfo(userId: string) {
     // Cache
     const cacheKey = `user:${userId}:profile`;
 
+    // Inicia y termina el timer SOLO si retorna datos de cache
     console.time("CACHE_LOOKUP");
     const cachedData = await redis.get(cacheKey);
-
     if (cachedData) {
-      console.log("✅ User info served from CACHE for user:", userId);
       console.timeEnd("CACHE_LOOKUP");
+      console.log("✅ User info served from CACHE for user:", userId);
       return cachedData;
     }
+    // Si no retorna datos, termina el timer aquí
+    console.timeEnd("CACHE_LOOKUP");
 
+    // Inicia y termina el timer SOLO si retorna datos de DB
     console.time("DB_LOOKUP");
     const userData = await prisma.user.findUnique({
       where: { id: userId },
       include: { profile: true },
     });
-
     if (userData) {
       await redis.set(cacheKey, JSON.stringify(userData), { ex: 300 });
-      console.log("✅ User info served from DATABASE for user:", userId);
       console.timeEnd("DB_LOOKUP");
+      console.log("✅ User info served from DATABASE for user:", userId);
+      return userData;
     }
+    // Si no retorna datos, termina el timer aquí
+    console.timeEnd("DB_LOOKUP");
 
-    return userData;
+    return null;
   } catch (error) {
     console.error("Error getting user info:", error);
     throw new Error("Error al obtener información del usuario");

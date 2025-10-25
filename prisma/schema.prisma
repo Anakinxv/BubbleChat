@@ -119,6 +119,7 @@ model User {
   communityInvitesCreated CommunityInvite[] @relation("CommunityInviteCreatedBy")
   chatsSettings   ChatSettings[]
   messages        Message[]
+  media           Media[]
   callsInitiated  Call[] @relation("CallInitiator")
   callParticipants CallParticipant[]
   ownedCommunities Community[] @relation("CommunityOwner")
@@ -394,6 +395,7 @@ model Message {
 model Attachment {
   id        String   @id @default(uuid())
   messageId String
+  mediaId   String?   // referencia al archivo en S3
   url       String
   type      String
   content   String?
@@ -402,9 +404,30 @@ model Attachment {
   metadata  Json?
 
   message   Message  @relation(fields: [messageId], references: [id])
+  media     Media?   @relation(fields: [mediaId], references: [id])
 
   @@index([messageId])
+  @@index([mediaId])
 }
+
+model Media {
+  id         String   @id @default(uuid())
+  ownerId    String
+  key        String   // ruta dentro de S3: users/{id}/uploads/xxx.png
+  url        String   // URL completa en CloudFront o S3
+  type       String   // image, video, audio, file
+  size       Int?
+  duration   Int?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  owner      User     @relation(fields: [ownerId], references: [id])
+  attachments Attachment[]
+
+  @@index([ownerId])
+  @@index([createdAt])
+}
+
 
 model Reaction {
   id        String        @id @default(uuid())

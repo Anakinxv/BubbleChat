@@ -1,6 +1,11 @@
-import type { NextConfig } from "next";
+const withTM = require("next-transpile-modules")([
+  "@uppy/core",
+  "@uppy/dashboard",
+  "@uppy/image-editor",
+  "@uppy/webcam",
+]);
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -15,11 +20,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     viewTransition: true,
+    turbopack: true,
   },
-  turbopack: {
-    root: __dirname, // o la ruta al root correcto si es diferente
-  },
-  webpack(config) {
+  webpack(config: any) {
     // Añadimos soporte para importar SVGs como componentes React
     config.module.rules.push({
       test: /\.svg$/i,
@@ -30,4 +33,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = withTM(nextConfig);

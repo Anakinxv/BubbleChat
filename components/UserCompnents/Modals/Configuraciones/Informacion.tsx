@@ -51,7 +51,7 @@ function Informacion() {
       >
         <Avatar
           className={`${
-            isMobile ? "w-24 h-24" : "w-20 h-20 sm:w-24 sm:h-24"
+            isMobile ? "w-30 h-30" : "w-30 h-30 sm:w-30 sm:h-30"
           } flex-shrink-0`}
         >
           <AvatarImage
@@ -69,13 +69,6 @@ function Informacion() {
             isMobile ? "items-center text-center" : ""
           }`}
         >
-          <button
-            type="button"
-            className="theme-bg-primary text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium hover:opacity-90 text-sm sm:text-base"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            Cambiar foto
-          </button>
           <input
             type="file"
             accept="image/*"
@@ -83,9 +76,6 @@ function Informacion() {
             onChange={handleFileChange}
             ref={fileInputRef}
           />
-          <p className="text-xs text-theme-textSecondary">
-            JPG, PNG o GIF. Máximo 5MB.
-          </p>
         </div>
       </div>
 

@@ -118,6 +118,7 @@
 /* Custom Uppy styling */
 .uppy-Dashboard-inner {
   background-color: var(--theme-surface) !important;
+  position: relative;
 }
 
 .uppy-Dashboard {
@@ -174,4 +175,25 @@
 
 .dark .scrollbar-hover:hover::-webkit-scrollbar-thumb {
   background: var(--theme-textSecondary);
+}
+
+.uppy-modal-custom .uppy-Dashboard-inner {
+  padding: 10px;
+  height: 800px;
+}
+
+.uppy-modal-custom-extra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px; /* Ajusta según tu preferencia */
+  margin: 0 auto;
+  text-align: center;
+  z-index: 10;
+  background: var(--theme-surface);
+  padding: 12px 0 0 0;
+  border-radius: 0 0 1.5rem 1.5rem;
+  font-size: 0.95rem;
+  color: var(--theme-textSecondary);
+  pointer-events: auto;
 }

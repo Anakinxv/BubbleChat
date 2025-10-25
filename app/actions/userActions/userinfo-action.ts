@@ -1,16 +1,29 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
 export async function getUserInfo(userId: string) {
   try {
-    console.time("DB_LOOKUP");
+    const session = await auth();
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
     const userData = await prisma.user.findUnique({
       where: { id: userId },
-      include: { profile: true },
+      select: {
+        name: true,
+        email: true,
+        profile: {
+          select: {
+            username: true,
+            displayName: true,
+            bio: true,
+            avatarUrl: true,
+          },
+        },
+      },
     });
-    console.timeEnd("DB_LOOKUP");
 
     if (userData) {
       console.log("✅ User info served from DATABASE for user:", userId);

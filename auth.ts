@@ -7,6 +7,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "./lib/prisma";
 import bcrypt from "bcryptjs";
+import generateUniqueUsername from "@/lib/generateUniqueUsername";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -56,10 +57,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // Redirige siempre al dashboard después de login
       return `${baseUrl}/app/home`;
     },
-    async jwt({ token, user }) {
+
+    async jwt({ token, user, account, profile }) {
       // Solo la primera vez que el usuario inicia sesión
       if (user) {
         token.id = user.id;
+
+        // Si es OAuth, crea el perfil DESPUÉS de que NextAuth haya creado el usuario
+        const oauthProviders = ["google", "facebook", "github"];
+        if (account && oauthProviders.includes(account.provider)) {
+          await createOrUpdateProfile(user, profile);
+        }
       }
       return token;
     },
@@ -72,31 +80,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async signIn({ user, account, profile }) {
       const oauthProviders = ["google", "facebook", "github"];
       if (user && account && oauthProviders.includes(account.provider)) {
+        // Solo maneja la lógica de cuentas existentes aquí
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
         });
 
         if (existingUser) {
-          // Solo actualiza la imagen si el perfil no tiene avatar
-          const profileDb = await prisma.profile.findFirst({
-            where: { userId: existingUser.id },
-          });
-
-          if (
-            (profile?.picture || profile?.avatar_url) &&
-            (!profileDb?.avatarUrl || profileDb.avatarUrl === "")
-          ) {
-            const imageUrl = profile.picture || profile.avatar_url;
-            await prisma.user.update({
-              where: { id: existingUser.id },
-              data: { image: imageUrl },
-            });
-            await prisma.profile.updateMany({
-              where: { userId: existingUser.id },
-              data: { avatarUrl: imageUrl },
-            });
-          }
-          // Si el usuario existe, verifica si ya tiene esta cuenta vinculada
+          // Verifica si ya tiene esta cuenta vinculada
           const existingAccount = await prisma.account.findUnique({
             where: {
               provider_providerAccountId: {
@@ -126,15 +116,65 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               },
             });
           }
-          return true;
-        } else {
-          // Si no existe el usuario, permite que NextAuth lo cree automáticamente
-          return true;
+
+          // Actualiza o crea el perfil para usuarios existentes
+          await createOrUpdateProfile(existingUser, profile);
         }
       }
 
-      // Para credenciales y otros casos
       return true;
     },
   },
 });
+
+// Función auxiliar para crear o actualizar el perfil
+async function createOrUpdateProfile(user: any, profile: any) {
+  try {
+    let existingProfile = await prisma.profile.findFirst({
+      where: { userId: user.id },
+    });
+
+    const avatarUrl =
+      user.image || profile?.picture || profile?.avatar_url || "";
+    const displayName = user.name || "";
+
+    if (!existingProfile) {
+      // Crea el perfil si no existe
+      const username = await generateUniqueUsername(
+        displayName || user.email!.split("@")[0]
+      );
+
+      await prisma.profile.create({
+        data: {
+          userId: user.id,
+          username,
+          displayName,
+          avatarUrl,
+        },
+      });
+    } else {
+      // Actualiza el perfil si existe pero le faltan datos
+      const updateData: any = {};
+
+      if (!existingProfile.displayName && displayName) {
+        updateData.displayName = displayName;
+      }
+
+      if (
+        (!existingProfile.avatarUrl || existingProfile.avatarUrl === "") &&
+        avatarUrl
+      ) {
+        updateData.avatarUrl = avatarUrl;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await prisma.profile.update({
+          where: { userId: user.id },
+          data: updateData,
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error creating/updating profile:", error);
+  }
+}

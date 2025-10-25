@@ -1,44 +1,77 @@
-import React, { useState, useRef } from "react";
+"use client";
+
+import React, { useRef, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import AppInputs from "@/components/CommonComponents/AppInputs";
 import Primarybutton from "@/components/CommonComponents/Primarybutton";
 import { useMediaQuery } from "react-responsive";
+import { Edit } from "lucide-react";
+import { FormWrapper } from "@/components/Forms/FormWrapper";
+import { userSchema } from "@/schemas/User.schema";
+import { useUserInfo } from "@/hooks/user/useUserInfo";
+import { useSession } from "next-auth/react";
+import { useAppStore } from "@/store/useAppStore";
+import { profile } from "console";
 
 function Informacion() {
   const isMobile = useMediaQuery({ maxWidth: 640 });
 
-  const imagenGuardada =
-    "https://i.pinimg.com/736x/a6/41/a1/a641a16d95dc82cc702cc9e8f8bfd958.jpg";
-  const [form, setForm] = useState({
-    nombre: "",
-    usuario: "",
-    email: "",
-    bio: "",
-    foto: null as File | null,
-  });
   const [preview, setPreview] = useState<string | null>(null);
   const [changed, setChanged] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setChanged(true);
-  };
+  // Store global
+  const UserInfo = useAppStore((state) => state.userInfo);
+  const SetUserInfo = useAppStore((state) => state.setUserInfo);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setForm((prev) => ({ ...prev, foto: file }));
-    setChanged(true);
+  const { data: session } = useSession();
+  const userId = session?.user?.id || "";
 
+  const { data } = useUserInfo(userId);
+
+  const imagenGuardada =
+    data?.profile?.avatarUrl ||
+    "https://i.pinimg.com/736x/a6/41/a1/a641a16d95dc82cc702cc9e8f8bfd958.jpg";
+
+  // Inicializa el store si está vacío
+  React.useEffect(() => {
+    if (data && (!UserInfo || !UserInfo.username)) {
+      SetUserInfo({
+        nombreCompleto: data?.profile?.displayName || "",
+        username: data?.profile?.username || "",
+        email: data?.email || "",
+        bio: data?.profile?.bio || "",
+        profileURL: data?.profile?.avatarUrl || "",
+      });
+    }
+    // eslint-disable-next-line
+  }, [data]);
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
+        SetUserInfo({
+          ...UserInfo,
+          profileURL: reader.result as string,
+        });
       };
       reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
     }
+    setChanged(true);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    SetUserInfo({
+      ...UserInfo,
+      [field]: value,
+    });
+    setChanged(true);
   };
 
   return (
@@ -49,70 +82,106 @@ function Informacion() {
           isMobile ? "flex-col items-center" : "flex-row items-center"
         } gap-3 sm:gap-4`}
       >
-        <Avatar
-          className={`${
-            isMobile ? "w-30 h-30" : "w-30 h-30 sm:w-30 sm:h-30"
-          } flex-shrink-0`}
-        >
-          <AvatarImage
-            src={
-              preview
-                ? preview
-                : imagenGuardada ||
-                  "https://i.pinimg.com/736x/a6/41/a1/a641a16d95dc82cc702cc9e8f8bfd958.jpg"
-            }
-            alt="Avatar"
-          />
-        </Avatar>
-        <div
-          className={`flex flex-col gap-2 ${
-            isMobile ? "items-center text-center" : ""
-          }`}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-            ref={fileInputRef}
-          />
+        <div className="w-full flex justify-center items-center">
+          <div className="relative w-40 h-40 flex-shrink-0 justify-center items-center">
+            <Avatar
+              className="w-40 h-40 hover:cursor-pointer hover:opacity-80 "
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <AvatarImage
+                src={preview ? preview : UserInfo?.profileURL || imagenGuardada}
+                alt="Avatar"
+                className="pointer-events-none w-full h-full object-cover rounded-full"
+              />
+            </Avatar>
+            {/* Edit icon fijo arriba a la derecha */}
+            <button
+              type="button"
+              className="absolute top-3 right-3 theme-bg-background rounded-full p-1.5 shadow-md z-10"
+              title="Editar foto"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Edit className="h-5 w-5 stroke-[#867eff]" />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Form Section */}
-      <div className="flex flex-col gap-3 sm:gap-4">
-        <AppInputs
-          label="Nombre y apellido"
-          placeholder="Nombre y apellido"
-          value={form.nombre}
-          onChange={(e) => handleInputChange("nombre", e.target.value)}
-        />
-        <AppInputs
-          label="Nombre de usuario"
-          placeholder="Nombre de usuario"
-          value={form.usuario}
-          onChange={(e) => handleInputChange("usuario", e.target.value)}
-        />
-        <AppInputs
-          label="Email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => handleInputChange("email", e.target.value)}
-        />
-        <div>
-          <label className="font-medium text-theme-text mb-1 block text-sm sm:text-base">
-            Biografía
-          </label>
-          <textarea
-            className="w-full rounded-2xl border theme-border p-2 sm:p-3 resize-none text-sm sm:text-base"
-            rows={isMobile ? 2 : 3}
-            placeholder="Escribe tu biografía..."
-            value={form.bio}
-            onChange={(e) => handleInputChange("bio", e.target.value)}
+      <FormWrapper
+        schema={userSchema}
+        onSubmit={(e: any) => {
+          e.preventDefault();
+          // Aquí puedes manejar el submit usando UserInfo
+        }}
+        defaultValues={{
+          nombre: UserInfo?.nombreCompleto || "",
+          usuario: UserInfo?.username || "",
+          email: UserInfo?.email || "",
+          bio: UserInfo?.bio || "",
+          fotoPerfil: UserInfo?.profileURL || "",
+        }}
+      >
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <AppInputs
+            label="Foto de perfil"
+            type="file"
+            placeholder="Selecciona una foto de perfil"
+            onChange={handleFileChange}
+            className="hidden"
+            inputRef={fileInputRef}
           />
+
+          <AppInputs
+            label="Nombre y apellido"
+            placeholder="Nombre y apellido"
+            value={UserInfo?.nombreCompleto || ""}
+            onChange={(e) =>
+              SetUserInfo({
+                ...UserInfo,
+                nombreCompleto: e.target.value,
+              })
+            }
+          />
+          <AppInputs
+            label="Nombre de usuario"
+            placeholder="Nombre de usuario"
+            value={UserInfo?.username || ""}
+            onChange={(e) =>
+              SetUserInfo({
+                ...UserInfo,
+                username: e.target.value,
+              })
+            }
+          />
+          <AppInputs
+            label="Email"
+            placeholder="Email"
+            value={UserInfo?.email || ""}
+            onChange={(e) =>
+              SetUserInfo({
+                ...UserInfo,
+                email: e.target.value,
+              })
+            }
+          />
+          <div>
+            <AppInputs
+              label="Biografía"
+              type="textarea"
+              placeholder="Escribe tu biografía..."
+              value={UserInfo?.bio || ""}
+              onChange={(e) =>
+                SetUserInfo({
+                  ...UserInfo,
+                  bio: e.target.value,
+                })
+              }
+            />
+          </div>
+          {changed && <Primarybutton>Guardar</Primarybutton>}
         </div>
-        {changed && <Primarybutton>Guardar</Primarybutton>}
-      </div>
+      </FormWrapper>
     </div>
   );
 }

@@ -14,6 +14,7 @@ type AppInputsProps = {
   id?: string;
   name?: string;
   value?: string;
+  inputRef?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
 };
 
 function AppInputs({
@@ -25,11 +26,19 @@ function AppInputs({
   id,
   name,
   value,
+  inputRef,
 }: AppInputsProps) {
+  // Detecta si el input está oculto
+  const isHidden = className?.split(" ").includes("hidden");
+
   return (
     <div className="w-full flex flex-col mb-4">
       {label && (
-        <div className="flex justify-between items-center mb-1">
+        <div
+          className={`flex justify-between items-center mb-1 ${
+            isHidden ? "hidden" : ""
+          }`}
+        >
           <Label
             htmlFor={id || name}
             className="mb-1 text-left text-lg text-[var(--theme-text)]"
@@ -44,13 +53,12 @@ function AppInputs({
           id={id}
           name={name}
           placeholder={placeholder}
-          className={`bg-[var(--theme-surface)] border border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] min-h-[120px] text-[var(--theme-text)] rounded-4xl p-4 resize-none align-top focus:outline-none 
-            
+          className={`bg-[var(--theme-surface)] border-2 border-[var(--theme-border)] placeholder:text-[var(--theme-textSecondary)] min-h-[180px] text-[var(--theme-text)] rounded-4xl p-4 resize-none align-top focus:outline-none 
             focus:ring-0 focus:border-[var(--theme-primary)]
             ${className || ""}`}
           onChange={onChange}
           value={value}
-          rows={5}
+          rows={7}
           style={{ verticalAlign: "top" }}
         />
       ) : (
@@ -64,6 +72,7 @@ function AppInputs({
           }`}
           onChange={onChange}
           value={value}
+          ref={inputRef as React.Ref<HTMLInputElement>}
         />
       )}
     </div>
